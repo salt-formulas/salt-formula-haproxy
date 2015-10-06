@@ -1,0 +1,10 @@
+{% set proxy = salt['grains.filter_by']({
+    'Debian': {
+        'pkgs': ['haproxy'],
+        'service': 'haproxy',
+    },
+    'RedHat': {
+        'pkgs': ['haproxy'],
+        'service': 'haproxy',
+    },
+}, merge=salt['pillar.get']('haproxy:proxy')) %}

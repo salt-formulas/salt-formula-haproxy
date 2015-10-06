@@ -1,0 +1,14 @@
+applications:
+- haproxy
+parameters:
+  haproxy:
+    proxy:
+      listen:
+        admin_page:
+          type: admin
+          check: false
+          binds:
+          - address: '*'
+            port: 9600
+          user: admin
+          password: admin

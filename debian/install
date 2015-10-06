@@ -1,0 +1,2 @@
+haproxy/*             /usr/share/salt-formulas/env/haproxy/
+metadata/service/*      /usr/share/salt-formulas/reclass/service/haproxy/
