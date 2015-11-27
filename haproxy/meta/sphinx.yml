@@ -19,7 +19,12 @@ role:
       {{ listen_name }}_{{ listen.type }}:
         name: {{ listen_name }}
         type: {{ listen.type }}
-        address: http{% if site.get('ssl', {}).get('enabled', False) %}s{% endif %}://{{ site.host.name }}:{{ site.host.get('port', '80') }}/
-        protocol: {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}http{% else %}tcp{% endif %}
+        {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
+        address: http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/
+        protocol: http
+        {%- else %}
+        address: {{ listen.binds.0.address }}:{{ listen.binds.0.port }}
+        protocol: tcp
+        {%- endif %}
       {%- endif %}
       {%- endfor %}
