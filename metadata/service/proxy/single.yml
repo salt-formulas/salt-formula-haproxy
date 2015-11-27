@@ -1,5 +1,7 @@
 applications:
 - haproxy
+classes:
+- service.haproxy.support
 parameters:
   haproxy:
     proxy:
