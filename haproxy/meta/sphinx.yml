@@ -11,7 +11,7 @@ role:
     endpoint:
       {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
       {%- if listen.get('check', True) %}
-      {%- if listen.binds.0.address|length == 1 or listen.binds.0.address == '0.0.0.0' %}
+      {%- if listen.binds.0.address in ['0.0.0.0', '*'] %}
       {% if grains.ipv4[0] == '127.0.0.1' %}{% set address =  grains.ipv4[1] %}{% else %}{% set address =  grains.ipv4[0] %}{% endif %}
       {%- else %}
       {%- set address = listen.binds.0.address %}
@@ -20,10 +20,10 @@ role:
         name: {{ listen_name }}
         type: {{ listen.type }}
         {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
-        address: http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/
+        address: "http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/"
         protocol: http
         {%- else %}
-        address: {{ listen.binds.0.address }}:{{ listen.binds.0.port }}
+        address: "{{ listen.binds.0.address }}:{{ listen.binds.0.port }}"
         protocol: tcp
         {%- endif %}
       {%- endif %}
