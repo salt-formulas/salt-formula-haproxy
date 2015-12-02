@@ -1,30 +1,31 @@
 {%- from "haproxy/map.jinja" import proxy with context %}
 {%- from "linux/map.jinja" import network with context -%}
-name: HAProxy
-description: The Reliable, High Performance TCP/HTTP Load Balancer. 
-role:
-  proxy:
-    name: proxy
-    param:
-      version:
-        value: "{{ salt['cmd.run']('haproxy -v')|replace("HA-Proxy version ", '') }}"
-    endpoint:
-      {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
-      {%- if listen.get('check', True) %}
-      {%- if listen.binds.0.address in ['0.0.0.0', '*'] %}
-      {% if grains.ipv4[0] == '127.0.0.1' %}{% set address =  grains.ipv4[1] %}{% else %}{% set address =  grains.ipv4[0] %}{% endif %}
-      {%- else %}
-      {%- set address = listen.binds.0.address %}
-      {%- endif %}
-      {{ listen_name }}_{{ listen.type }}:
-        name: {{ listen_name }}
-        type: {{ listen.type }}
-        {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
-        address: "http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/"
-        protocol: http
+doc:
+  name: HAProxy
+  description: The Reliable, High Performance TCP/HTTP Load Balancer. 
+  role:
+    proxy:
+      name: proxy
+      param:
+        version:
+          value: "{{ salt['cmd.run']('haproxy -v')|replace("HA-Proxy version ", '') }}"
+      endpoint:
+        {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
+        {%- if listen.get('check', True) %}
+        {%- if listen.binds.0.address in ['0.0.0.0', '*'] %}
+        {% if grains.ipv4[0] == '127.0.0.1' %}{% set address =  grains.ipv4[1] %}{% else %}{% set address =  grains.ipv4[0] %}{% endif %}
         {%- else %}
-        address: "{{ listen.binds.0.address }}:{{ listen.binds.0.port }}"
-        protocol: tcp
+        {%- set address = listen.binds.0.address %}
         {%- endif %}
-      {%- endif %}
-      {%- endfor %}
+        {{ listen_name }}_{{ listen.type }}:
+          name: {{ listen_name }}
+          type: {{ listen.type }}
+          {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
+          address: "http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/"
+          protocol: http
+          {%- else %}
+          address: "{{ listen.binds.0.address }}:{{ listen.binds.0.port }}"
+          protocol: tcp
+          {%- endif %}
+        {%- endif %}
+        {%- endfor %}
