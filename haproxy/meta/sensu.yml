@@ -1,5 +1,6 @@
 {%- from "haproxy/map.jinja" import proxy with context -%}
 {%- from "linux/map.jinja" import network with context -%}
+{%- set grains = salt['grains.items'] -%}
 {%- if grains.ipv4[0] == '127.0.0.1' %}{% set address =  grains.ipv4[1] %}{% else %}{% set address =  grains.ipv4[0] %}{% endif %}
 check:
   local_haproxy_server_proc:
