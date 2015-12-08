@@ -12,7 +12,7 @@ doc:
       endpoint:
         {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
         {%- if listen.get('check', True) %}
-        {%- if listen.binds.0.address in ['0.0.0.0', '*'] %}
+        {%- if listen.binds.0.address in ["0.0.0.0", "*", "\*"] %}
         {% if grains.ipv4[0] == '127.0.0.1' %}{% set address =  grains.ipv4[1] %}{% else %}{% set address =  grains.ipv4[0] %}{% endif %}
         {%- else %}
         {%- set address = listen.binds.0.address %}
