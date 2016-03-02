@@ -4,8 +4,44 @@ HAproxy
 
 The Reliable, High Performance TCP/HTTP Load Balancer. 
 
-Sample pillar
-=============
+
+Sample pillars
+==============
+
+Simple admin listener
+
+.. code-block:: yaml
+
+    haproxy:
+      proxy:
+        enabled: True
+        listen:
+          admin_page:
+            type: admin
+            binds:
+            - address: 0.0.0.0
+              port: 8801
+            user: fsdfdsfds
+            password: dsfdsf
+
+
+Simple stats listener
+
+.. code-block:: yaml
+
+    haproxy:
+      proxy:
+        enabled: True
+        listen:
+          admin_page:
+            type: stats
+            binds:
+            - address: 0.0.0.0
+              port: 8801
+
+
+
+Sample pillar with admin
 
 .. code-block:: yaml
 
@@ -13,6 +49,7 @@ Sample pillar
       proxy:
         enabled: True
         mode: http/tcp
+        logging: syslog
         max_connections: 1024
         connect_timeout: 5000
         client_timeout: 50000
@@ -31,8 +68,8 @@ Sample pillar
             port: 8443
             params: 'maxconn 256'
 
+
 Sample pillar with custom logging
-=================================
 
 .. code-block:: yaml
 
