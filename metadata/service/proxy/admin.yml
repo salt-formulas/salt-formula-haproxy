@@ -3,6 +3,8 @@ applications:
 parameters:
   _param:
     haproxy_admin_password: password
+    haproxy_admin_address: '0.0.0.0'
+    haproxy_admin_port: 9600
   haproxy:
     proxy:
       listen:
@@ -10,7 +12,7 @@ parameters:
           type: admin
           check: false
           binds:
-          - address: '0.0.0.0'
-            port: 9600
+          - address: {_param:haproxy_admin_address}
+            port: {_param:haproxy_admin_port}
           user: admin
           password: ${_param:haproxy_admin_password}
