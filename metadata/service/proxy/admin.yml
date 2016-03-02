@@ -12,7 +12,7 @@ parameters:
           type: admin
           check: false
           binds:
-          - address: {_param:haproxy_admin_address}
-            port: {_param:haproxy_admin_port}
+          - address: ${_param:haproxy_admin_address}
+            port: ${_param:haproxy_admin_port}
           user: admin
           password: ${_param:haproxy_admin_password}
