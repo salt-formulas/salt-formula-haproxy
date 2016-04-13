@@ -2,9 +2,11 @@
     'Debian': {
         'pkgs': ['haproxy'],
         'service': 'haproxy',
+        'stats_socket': '/run/haproxy/admin.sock',
     },
     'RedHat': {
         'pkgs': ['haproxy'],
         'service': 'haproxy',
+        'stats_socket': '/run/haproxy/admin.sock',
     },
 }, merge=salt['pillar.get']('haproxy:proxy')) %}
