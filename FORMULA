@@ -1,0 +1,8 @@
+name: haproxy
+os: Debian, RedHat
+os_family: Debian, RedHat
+version: 201606
+release: 1
+summary: HAproxy salt formula
+description: Configure HAproxy service.
+top_level_dir: haproxy
