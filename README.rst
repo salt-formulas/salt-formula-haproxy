@@ -24,7 +24,6 @@ Simple admin listener
             user: fsdfdsfds
             password: dsfdsf
 
-
 Simple stats listener
 
 .. code-block:: yaml
@@ -207,6 +206,41 @@ Sample pillar with custom logging
             host: 10.0.88.13
             port: 5000
             params: check
+
+Custom more complex listener (for Artifactory and subdomains for docker
+registries)
+
+.. code-block:: yaml
+
+    haproxy:
+      proxy:
+        listen:
+          artifactory:
+            mode: http
+            options:
+              - forwardfor
+              - forwardfor header X-Real-IP
+              - httpchk
+              - httpclose
+              - httplog
+            acl:
+              is_docker: "path_reg ^/v[12][/.]*"
+            http_request:
+              - action: "set-path /artifactory/api/docker/%[req.hdr(host),lower,field(1,'.')]%[path]"
+                condition: "if is_docker"
+            balance: source
+            binds:
+              - address: ${_param:cluster_vip_address}
+                port: 8082
+            servers:
+              - name: ${_param:cluster_node01_name}
+                host: ${_param:cluster_node01_address}
+                port: 8082
+                params: check
+              - name: ${_param:cluster_node02_name}
+                host: ${_param:cluster_node02_address}
+                port: 8082
+                params: backup check
 
 Read more
 =========
