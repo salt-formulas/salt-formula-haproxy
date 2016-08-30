@@ -17,10 +17,15 @@ doc:
         {%- else %}
         {%- set address = listen.binds.0.address %}
         {%- endif %}
-        {{ listen_name }}_{{ listen.type }}:
+        {{ listen_name }}_{{ listen.type|default(listen.get('mode', 'tcp')) }}:
           name: {{ listen_name }}
+          {%- if listen.type is defined %}
           type: {{ listen.type }}
+          {%- else %}
+          mode: {{ listen.mode|default('tcp') }}
+          {%- endif %}
           {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
+          {%- if listen.type|default(None) in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] or listen.mode|default('tcp') == 'http' %}
           address: "http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/"
           protocol: http
           {%- else %}

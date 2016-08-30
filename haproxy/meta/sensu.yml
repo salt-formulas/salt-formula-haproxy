@@ -27,7 +27,7 @@ check:
 {%- else %}
 {%- set address = listen.binds.0.address %}
 {%- endif %}
-{%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
+{%- if listen.type|default(None) in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] or listen.mode|default('tcp') == 'http' %}
   remote_haproxy_proxy_http_{{ listen_name }}_{{ network.fqdn }}:
     command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_http -H {{ address }} -p {{ listen.binds.0.port }} -w 5 -c 10"
     interval: 60
