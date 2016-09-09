@@ -18,6 +18,15 @@ haproxy_packages:
   - require:
     - pkg: haproxy_packages
 
+haproxy_ssl:
+  file.directory:
+  - name: /etc/haproxy/ssl
+  - user: root
+  - group: haproxy
+  - mode: 750
+  - require:
+    - pkg: haproxy_packages
+
 net.ipv4.ip_nonlocal_bind:
   sysctl.present:
     - value: 1

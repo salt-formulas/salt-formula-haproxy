@@ -232,6 +232,11 @@ registries)
             binds:
               - address: ${_param:cluster_vip_address}
                 port: 8082
+                ssl:
+                  enabled: true
+                  # This PEM file needs to contain key, cert, CA and possibly
+                  # intermediate certificates
+                  pem_file: /etc/haproxy/ssl/server.pem
             servers:
               - name: ${_param:cluster_node01_name}
                 host: ${_param:cluster_node01_address}
