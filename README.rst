@@ -49,10 +49,11 @@ Sample pillar with admin
         enabled: True
         mode: http/tcp
         logging: syslog
-        max_connections: 1024
-        connect_timeout: 5000
-        client_timeout: 50000
-        server_timeout: 50000
+        maxconn: 1024
+        timeout:
+          connect: 5000
+          client: 50000
+          server: 50000
         listens:
         - name: https-in
           bind:
@@ -77,10 +78,11 @@ Sample pillar with custom logging
         enabled: True
         mode: http/tcp
         logging: syslog
-        max_connections: 1024
-        connect_timeout: 5000
-        client_timeout: 50000
-        server_timeout: 50000
+        maxconn: 1024
+        timeout:
+          connect: 5000
+          client: 50000
+          server: 50000
         listens:
         - name: https-in
           bind:
