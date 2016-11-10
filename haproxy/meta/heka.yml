@@ -1,0 +1,1099 @@
+{%- from "haproxy/map.jinja" import proxy with context %}
+{%- if proxy.enabled and proxy.listen is defined %}
+
+metric_collector:
+  trigger:
+{%- if proxy.listen.glance_registry is defined %}
+    glance_registry_api_backends_all_down:
+      description: 'All API backends are down for glance-registry-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: glance-registry-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    glance_registry_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for glance-registry-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: glance-registry-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    glance_registry_api_backends_one_down:
+      description: 'At least one API backend is down for glance-registry-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: glance-registry-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+{%- if proxy.listen.nova_openstack_api is defined %}
+    nova_api_backends_all_down:
+      description: 'All API backends are down for nova-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: nova-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    nova_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for nova-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: nova-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    nova_api_backends_one_down:
+      description: 'At least one API backend is down for nova-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: nova-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    nova_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on nova-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: nova-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.cinder_api is defined %}
+    cinder_api_backends_all_down:
+      description: 'All API backends are down for cinder-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: cinder-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    cinder_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for cinder-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: cinder-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    cinder_api_backends_one_down:
+      description: 'At least one API backend is down for cinder-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: cinder-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    cinder_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on cinder-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: cinder-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.heat_api_cfn is defined %}
+    heat_cfn_api_backends_all_down:
+      description: 'All API backends are down for heat-cfn-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: heat-cfn-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    heat_cfn_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for heat-cfn-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: heat-cfn-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    heat_cfn_api_backends_one_down:
+      description: 'At least one API backend is down for heat-cfn-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: heat-cfn-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+{%- if proxy.listen.horizon_web is defined %}
+    horizon_web_api_backends_all_down:
+      description: 'All API backends are down for horizon-web'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: 'horizon-web || horizon-https'
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    horizon_web_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for horizon-web'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: 'horizon-web || horizon-https'
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    horizon_web_api_backends_one_down:
+      description: 'At least one API backend is down for horizon-web'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: 'horizon-web || horizon-https'
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    horizon_web_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on horizon-web-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: 'horizon-web || horizon-https'
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.nova_novncproxy_websocket is defined %}
+    nova_novncproxy_websocket_api_backends_all_down:
+      description: 'All API backends are down for nova-novncproxy-websocket'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: nova-novncproxy-websocket
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    nova_novncproxy_websocket_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for nova-novncproxy-websocket'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: nova-novncproxy-websocket
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    nova_novncproxy_websocket_api_backends_one_down:
+      description: 'At least one API backend is down for nova-novncproxy-websocket'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: nova-novncproxy-websocket
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+{%- if proxy.listen.heat_api is defined %}
+    heat_api_backends_all_down:
+      description: 'All API backends are down for heat-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: heat-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    heat_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for heat-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: heat-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    heat_api_backends_one_down:
+      description: 'At least one API backend is down for heat-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: heat-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    heat_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on heat-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: heat-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.keystone_public is defined %}
+    keystone_public_api_backends_all_down:
+      description: 'All API backends are down for keystone-public-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: keystone-public-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    keystone_public_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for keystone-public-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: keystone-public-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    keystone_public_api_backends_one_down:
+      description: 'At least one API backend is down for keystone-public-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: keystone-public-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    keystone_public_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on keystone-public-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: keystone-public-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.heat_api_cloudwatch is defined %}
+    heat_cloudwatch_api_backends_all_down:
+      description: 'All API backends are down for heat-cloudwatch-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: heat-cloudwatch-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    heat_cloudwatch_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for heat-cloudwatch-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: heat-cloudwatch-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    heat_cloudwatch_api_backends_one_down:
+      description: 'At least one API backend is down for heat-cloudwatch-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: heat-cloudwatch-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+{%- if proxy.listen.nova_metadata is defined %}
+    nova_metadata_api_backends_all_down:
+      description: 'All API backends are down for nova-metadata-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: nova-metadata-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    nova_metadata_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for nova-metadata-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: nova-metadata-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    nova_metadata_api_backends_one_down:
+      description: 'At least one API backend is down for nova-metadata-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: nova-metadata-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+{%- if proxy.listen.mysql_cluster is defined %}
+    mysqld_tcp_api_backends_all_down:
+      description: 'All API backends are down for mysqld-tcp'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: mysqld-tcp
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    mysqld_tcp_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for mysqld-tcp'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: mysqld-tcp
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    mysqld_tcp_api_backends_one_down:
+      description: 'At least one API backend is down for mysqld-tcp'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: mysqld-tcp
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+{%- if proxy.listen.keystone_admin is defined %}
+    keystone_admin_api_backends_all_down:
+      description: 'All API backends are down for keystone-admin-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: keystone-admin-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    keystone_admin_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for keystone-admin-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: keystone-admin-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    keystone_admin_api_backends_one_down:
+      description: 'At least one API backend is down for keystone-admin-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: keystone-admin-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    keystone_admin_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on keystone-admin-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: keystone-admin-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.glance_api is defined %}
+    glance_api_backends_all_down:
+      description: 'All API backends are down for glance-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: glance-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    glance_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for glance-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: glance-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    glance_api_backends_one_down:
+      description: 'At least one API backend is down for glance-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: glance-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    glance_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on glance-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: glance-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.neutron_api is defined %}
+    neutron_api_backends_all_down:
+      description: 'All API backends are down for neutron-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: neutron-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    neutron_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for neutron-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: neutron-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    neutron_api_backends_one_down:
+      description: 'At least one API backend is down for neutron-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: neutron-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    neutron_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on neutron-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: neutron-api
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.swift_api is defined %}
+    swift_api_backends_all_down:
+      description: 'All API backends are down for swift-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: 'swift-api || object-storage'
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    swift_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for swift-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: 'swift-api || object-storage'
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    swift_api_backends_one_down:
+      description: 'At least one API backend is down for swift-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: 'swift-api || object-storage'
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    swift_api_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on swift-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: 'swift-api || object-storage'
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- if proxy.listen.ceilometer_api is defined %}
+    ceilometer_api_backends_all_down:
+      description: 'All API backends are down for ceilometer-api'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: ceilometer-api
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    ceilometer_api_backends_majority_down:
+      description: 'Less than 50% of backends are up for ceilometer-api'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: ceilometer-api
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    ceilometer_api_backends_one_down:
+      description: 'At least one API backend is down for ceilometer-api'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: ceilometer-api
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- endif %}
+    haproxy_check:
+      description: 'HAProxy cannot be checked'
+      severity: down
+      rules:
+      - metric: haproxy_check
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+  alarm:
+{%- if proxy.listen.glance_registry is defined %}
+    glance_registry_api_backends:
+      triggers:
+      - glance_registry_api_backends_all_down
+      - glance_registry_api_backends_majority_down
+      - glance_registry_api_backends_one_down
+{%- endif %}
+{%- if proxy.listen.glance_api is defined %}
+    glance_api_backends:
+      triggers:
+      - glance_api_backends_all_down
+      - glance_api_backends_majority_down
+      - glance_api_backends_one_down
+      dimension:
+        service: glance-api
+    glance_api_http_errors:
+      triggers:
+      - glance_api_http_errors
+      dimension:
+        service: glance-api
+{%- endif %}
+{%- if proxy.listen.nova_openstack_api is defined %}
+    nova_api_backends:
+      triggers:
+      - nova_api_backends_all_down
+      - nova_api_backends_majority_down
+      - nova_api_backends_one_down
+      dimension:
+        service: nova-api
+    nova_api_http_errors:
+      triggers:
+      - nova_api_http_errors
+      dimension:
+        service: nova-api
+{%- endif %}
+{%- if proxy.listen.cinder_api is defined %}
+    cinder_api_backends:
+      triggers:
+      - cinder_api_backends_all_down
+      - cinder_api_backends_majority_down
+      - cinder_api_backends_one_down
+      dimension:
+        service: cinder-api
+    cinder_api_http_errors:
+      triggers:
+      - cinder_api_http_errors
+      dimension:
+        service: cinder-api
+{%- endif %}
+{%- if proxy.listen.heat_api_cfn is defined %}
+    heat_cfn_api_backends:
+      triggers:
+      - heat_cfn_api_backends_all_down
+      - heat_cfn_api_backends_majority_down
+      - heat_cfn_api_backends_one_down
+{%- endif %}
+{%- if proxy.listen.heat_api is defined %}
+    heat_api_backends:
+      triggers:
+      - heat_api_backends_all_down
+      - heat_api_backends_majority_down
+      - heat_api_backends_one_down
+      dimension:
+        service: heat-api
+    heat_api_http_errors:
+      triggers:
+      - heat_api_http_errors
+      dimension:
+        service: heat-api
+{%- endif %}
+{%- if proxy.listen.horizon_web is defined %}
+    horizon_web_api_backends:
+      triggers:
+      - horizon_web_api_backends_all_down
+      - horizon_web_api_backends_majority_down
+      - horizon_web_api_backends_one_down
+      dimension:
+        service: horizon-web-api
+    horizon_web_api_http_errors:
+      triggers:
+      - horizon_web_api_http_errors
+      dimension:
+        service: horizon-web-api
+{%- endif %}
+{%- if proxy.listen.nova_novncproxy_websocket is defined %}
+    nova_novncproxy_websocket_api_backends:
+      triggers:
+      - nova_novncproxy_websocket_api_backends_all_down
+      - nova_novncproxy_websocket_api_backends_majority_down
+      - nova_novncproxy_websocket_api_backends_one_down
+{%- endif %}
+{%- if proxy.listen.keystone_public is defined %}
+    keystone_public_api_backends:
+      triggers:
+      - keystone_public_api_backends_all_down
+      - keystone_public_api_backends_majority_down
+      - keystone_public_api_backends_one_down
+      dimension:
+        service: keystone-public-api
+    keystone_public_api_http_errors:
+      triggers:
+      - keystone_public_api_http_errors
+      dimension:
+        service: keystone-public-api
+{%- endif %}
+{%- if proxy.listen.heat_api_cloudwatch is defined %}
+    heat_cloudwatch_api_backends:
+      triggers:
+      - heat_cloudwatch_api_backends_all_down
+      - heat_cloudwatch_api_backends_majority_down
+      - heat_cloudwatch_api_backends_one_down
+{%- endif %}
+{%- if proxy.listen.nova_metadata is defined %}
+    nova_metadata_api_backends:
+      triggers:
+      - nova_metadata_api_backends_all_down
+      - nova_metadata_api_backends_majority_down
+      - nova_metadata_api_backends_one_down
+{%- endif %}
+{%- if proxy.listen.mysql_cluster is defined %}
+    mysqld_tcp_backends:
+      triggers:
+      - mysqld_tcp_api_backends_all_down
+      - mysqld_tcp_api_backends_majority_down
+      - mysqld_tcp_api_backends_one_down
+{%- endif %}
+{%- if proxy.listen.keystone_admin is defined %}
+    keystone_admin_api_backends:
+      triggers:
+      - keystone_admin_api_backends_all_down
+      - keystone_admin_api_backends_majority_down
+      - keystone_admin_api_backends_one_down
+      dimension:
+        service: keystone-admin-api
+    keystone_admin_api_http_errors:
+      triggers:
+      - keystone_admin_api_http_errors
+      dimension:
+        service: keystone-admin-api
+{%- endif %}
+{%- if proxy.listen.neutron_api is defined %}
+    neutron_api_backends:
+      triggers:
+      - neutron_api_backends_all_down
+      - neutron_api_backends_majority_down
+      - neutron_api_backends_one_down
+      dimension:
+        service: neutron-api
+    neutron_api_http_errors:
+      triggers:
+      - neutron_api_http_errors
+      dimension:
+        service: neutron-api
+{%- endif %}
+{%- if proxy.listen.swift_api is defined %}
+    swift_api_backends:
+      triggers:
+      - swift_api_backends_all_down
+      - swift_api_backends_majority_down
+      - swift_api_backends_one_down
+      dimension:
+        service: swift-api
+    swift_api_http_errors:
+      triggers:
+      - swift_api_http_errors
+      dimension:
+        service: swift-api
+{%- endif %}
+{%- if proxy.listen.ceilometer_api is defined %}
+    ceilometer_api_backends:
+      triggers:
+      - ceilometer_api_backends_all_down
+      - ceilometer_api_backends_majority_down
+      - ceilometer_api_backends_one_down
+    haproxy_check:
+      triggers:
+      - haproxy_check
+{%- endif %}
+aggregator:
+  alarm_cluster:
+{%- if proxy.listen.glance_registry is defined %}
+    glance_registry_api:
+      policy: highest_severity
+      match:
+        member: glance_registry_api_backends
+      members:
+      - glance_registry_api_backends
+{%- endif %}
+{%- if proxy.listen.glance_api is defined %}
+    glance_api:
+      policy: highest_severity
+      match:
+        service: glance-api
+      members:
+      - glance_api_backends
+      - glance_api_http_errors
+{%- endif %}
+{%- if proxy.listen.nova_openstack_api is defined %}
+    nova_api:
+      policy: highest_severity
+      match:
+        service: nova-api
+      members:
+      - nova_api_backends
+      - nova_api_http_errors
+{%- endif %}
+{%- if proxy.listen.cinder_api is defined %}
+    cinder_api:
+      policy: highest_severity
+      match:
+        service: cinder-api
+      members:
+      - cinder_api_backends
+      - cinder_api_http_errors
+{%- endif %}
+{%- if proxy.listen.heat_api_cfn is defined %}
+    heat_cfn_api:
+      policy: highest_severity
+      match:
+        member: heat_cfn_api_backends
+      members:
+      - heat_cfn_api_backends
+{%- endif %}
+{%- if proxy.listen.heat_api is defined %}
+    heat_api:
+      policy: highest_severity
+      match:
+        service: heat-api
+      members:
+      - heat_api_backends
+      - heat_api_http_errors
+{%- endif %}
+{%- if proxy.listen.horizon_web is defined %}
+    horizon_web_api:
+      policy: highest_severity
+      match:
+        service: horizon-web-api
+      members:
+      - horizon_web_api_backends
+      - horizon_web_api_http_errors
+{%- endif %}
+{%- if proxy.listen.nova_novncproxy_websocket is defined %}
+    nova_novncproxy_websocket_api:
+      policy: highest_severity
+      match:
+        member: nova_novncproxy_websocket_api_backends
+      members:
+      - nova_novncproxy_websocket_api_backends
+{%- endif %}
+{%- if proxy.listen.keystone_public is defined %}
+    keystone_public_api:
+      policy: highest_severity
+      match:
+        service: keystone-public-api
+      members:
+      - keystone_public_api_backends
+      - keystone_public_api_http_errors
+{%- endif %}
+{%- if proxy.listen.heat_api_cloudwatch is defined %}
+    heat_cloudwatch_api:
+      policy: highest_severity
+      match:
+        member: heat_cloudwatch_api_backends
+      members:
+      - heat_cloudwatch_api_backends
+{%- endif %}
+{%- if proxy.listen.nova_metadata is defined %}
+    nova_metadata_api:
+      policy: highest_severity
+      match:
+        member: nova_metadata_api_backends
+      members:
+      - nova_metadata_api_backends
+{%- endif %}
+{%- if proxy.listen.mysql_cluster is defined %}
+    mysqld_tcp:
+      policy: highest_severity
+      match:
+        member: mysqld_tcp_backends
+      members:
+      - mysqld_tcp_backends
+{%- endif %}
+{%- if proxy.listen.keystone_admin is defined %}
+    keystone_admin_api:
+      policy: highest_severity
+      match:
+        service: keystone-admin-api
+      members:
+      - keystone_admin_api_backends
+      - keystone_admin_api_http_errors
+{%- endif %}
+{%- if proxy.listen.neutron_api is defined %}
+    neutron_api:
+      policy: highest_severity
+      match:
+        service: neutron-api
+      members:
+      - neutron_api_backends
+      - neutron_api_http_errors
+{%- endif %}
+{%- if proxy.listen.swift_api is defined %}
+    swift_api:
+      policy: highest_severity
+      match:
+        service: swift-api
+      members:
+      - swift_api_backends
+      - swift_api_http_errors
+{%- endif %}
+{%- if proxy.listen.ceilometer_api is defined %}
+    ceilometer_api:
+      policy: highest_severity
+      match:
+        member: ceilometer_api_backends
+      members:
+      - ceilometer_api_backends
+{%- endif %}
+
+{%- endif %}
