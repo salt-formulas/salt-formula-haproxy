@@ -1,0 +1,3 @@
+dashboard:
+  haproxy:
+    template: haproxy/files/HAProxy.json
