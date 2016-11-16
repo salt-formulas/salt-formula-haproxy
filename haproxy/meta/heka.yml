@@ -1,0 +1,106 @@
+{%- from "haproxy/map.jinja" import proxy with context %}
+{%- if proxy.enabled and proxy.listen is defined and proxy.listen|length > 0 %}
+
+metric_collector:
+  trigger:
+    haproxy_check:
+      description: 'HAProxy cannot be checked'
+      severity: down
+      rules:
+      - metric: haproxy_check
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
+    {{ listen_name }}_backends_all_down:
+      description: 'All API backends are down for {{ listen_name }}'
+      severity: down
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: {{ listen_name }}
+          state: up
+        relational_operator: '=='
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+    {{ listen_name }}_backends_majority_down:
+      description: 'Less than 50% of backends are up for {{ listen_name }}'
+      severity: critical
+      rules:
+      - metric: haproxy_backend_servers_percent
+        field:
+          backend: {{ listen_name }}
+          state: up
+        relational_operator: '<='
+        threshold: 50
+        window: 60
+        periods: 0
+        function: last
+    {{ listen_name }}_backends_one_down:
+      description: 'At least one API backend is down for {{ listen_name }}'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_servers
+        field:
+          backend: {{ listen_name }}
+          state: down
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 0
+        function: last
+{%- if listen.get('type', None) == 'openstack-service' %}
+    {{ listen_name }}_http_errors:
+      description: 'Too many 5xx HTTP errors have been detected on {{ listen_name }}'
+      severity: warning
+      rules:
+      - metric: haproxy_backend_response_5xx
+        field:
+          backend: {{ listen_name }}
+        relational_operator: '>'
+        threshold: 0
+        window: 60
+        periods: 1
+        function: diff
+{%- endif %}
+{%- endfor %}
+  alarm:
+{%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
+    {{ listen_name }}_backends:
+      triggers:
+      - {{ listen_name }}_backends_all_down
+      - {{ listen_name }}_backends_majority_down
+      - {{ listen_name }}_backends_one_down
+      dimension:
+        service: {{ listen_name }}
+{%- if listen.get('type', None) == 'openstack-service' %}
+    {{ listen_name }}_http_errors:
+      triggers:
+      - {{ listen_name }}_http_errors
+      dimension:
+        service: {{ listen_name }}
+{%- endif %}
+{%- else %}
+    {}
+{%- endfor %}
+aggregator:
+  alarm_cluster:
+{%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
+    {{ listen_name }}:
+      policy: highest_severity
+      match:
+        service: {{ listen_name }}
+      members:
+      - {{ listen_name }}_backends
+{%- if listen.get('type', None) == 'openstack-service' %}
+      - {{ listen_name }}_http_errors
+{%- endif %}
+{%- else %}
+    {}
+{%- endfor %}
+
+{%- endif %}
