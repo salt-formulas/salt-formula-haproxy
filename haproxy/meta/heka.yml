@@ -82,13 +82,13 @@ metric_collector:
       - {{ listen_name }}_backends_majority_down
       - {{ listen_name }}_backends_one_down
       dimension:
-        service: {{ listen_name }}
+        backend: {{ listen_name }}
 {%- if listen.get('type', None) == 'openstack-service' %}
     {{ listen_name }}_http_errors:
       triggers:
       - {{ listen_name }}_http_errors
       dimension:
-        service: {{ listen_name }}
+        backend: {{ listen_name }}
 {%- endif %}
 {%- endfor %}
 aggregator:
@@ -106,12 +106,14 @@ aggregator:
     {{ listen_name }}:
       policy: highest_severity
       match:
-        service: {{ listen_name }}
+        backend: {{ listen_name }}
       members:
       - {{ listen_name }}_backends
 {%- if listen.get('type', None) == 'openstack-service' %}
       - {{ listen_name }}_http_errors
 {%- endif %}
+      dimension:
+        service: {{ listen.service_name|default(listen_name) }}
 {%- endfor %}
 
 {%- endif %}
