@@ -69,6 +69,12 @@ metric_collector:
 {%- endif %}
 {%- endfor %}
   alarm:
+    haproxy_check:
+      alerting: enabled
+      triggers:
+      - haproxy_check
+      dimension:
+        service: haproxy
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
     {{ listen_name }}_backends:
       triggers:
@@ -84,11 +90,18 @@ metric_collector:
       dimension:
         service: {{ listen_name }}
 {%- endif %}
-{%- else %}
-    {}
 {%- endfor %}
 aggregator:
   alarm_cluster:
+    haproxy_check:
+      policy: majority_of_members
+      match:
+        service: haproxy
+      group_by: hostname
+      members:
+      - haproxy_check
+      dimension:
+        cluster_name: haproxy-openstack
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
     {{ listen_name }}:
       policy: highest_severity
@@ -99,8 +112,6 @@ aggregator:
 {%- if listen.get('type', None) == 'openstack-service' %}
       - {{ listen_name }}_http_errors
 {%- endif %}
-{%- else %}
-    {}
 {%- endfor %}
 
 {%- endif %}
