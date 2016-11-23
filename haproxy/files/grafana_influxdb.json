@@ -176,17 +176,17 @@
         },
         {
           "cacheTimeout": null,
-          "colorBackground": true,
+          "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(211, 12, 12, 0.75)",
-            "rgba(9, 40, 239, 0.73)",
-            "rgba(71, 212, 59, 0.44)"
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": null,
           "editable": true,
           "error": false,
-          "format": "none",
+          "format": "s",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -194,7 +194,7 @@
             "thresholdLabels": false,
             "thresholdMarkers": true
           },
-          "id": 1,
+          "id": 11,
           "interval": ">60s",
           "links": [],
           "mappingType": 1,
@@ -209,7 +209,7 @@
             }
           ],
           "maxDataPoints": 100,
-          "nullPointMode": "null as zero",
+          "nullPointMode": "connected",
           "nullText": null,
           "postfix": "",
           "postfixFontSize": "50%",
@@ -233,8 +233,7 @@
             {
               "column": "value",
               "dsType": "influxdb",
-              "fill": "",
-              "function": "last",
+              "function": "mean",
               "groupBy": [
                 {
                   "params": [
@@ -243,9 +242,10 @@
                   "type": "time"
                 }
               ],
-              "measurement": "pacemaker_local_resource_active",
+              "interval": "",
+              "measurement": "haproxy_uptime",
               "policy": "default",
-              "query": "SELECT last(\"value\") FROM \"pacemaker_local_resource_active\" WHERE \"hostname\" =~ /$server/ AND \"resource\" = 'vip__public' AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_uptime\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -259,25 +259,21 @@
                   },
                   {
                     "params": [],
-                    "type": "last"
+                    "type": "mean"
                   }
                 ]
               ],
               "tags": [
                 {
                   "key": "hostname",
+                  "operator": "=~",
                   "value": "/$server/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "resource",
-                  "value": "vip__public"
                 }
               ]
             }
           ],
-          "thresholds": "0,1",
-          "title": "Public VIP",
+          "thresholds": "",
+          "title": "Uptime",
           "type": "singlestat",
           "valueFontSize": "50%",
           "valueMaps": [
@@ -285,141 +281,6 @@
               "op": "=",
               "text": "N/A",
               "value": "null"
-            },
-            {
-              "op": "=",
-              "text": "ACTIVE",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "INACTIVE",
-              "value": "0"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "rgba(211, 12, 12, 0.75)",
-            "rgba(9, 40, 239, 0.73)",
-            "rgba(71, 212, 59, 0.44)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 19,
-          "interval": ">60s",
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "null as zero",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "column": "value",
-              "dsType": "influxdb",
-              "fill": "",
-              "function": "last",
-              "groupBy": [
-                {
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "measurement": "pacemaker_local_resource_active",
-              "policy": "default",
-              "query": "SELECT last(\"value\") FROM \"pacemaker_local_resource_active\" WHERE \"hostname\" =~ /$server/ AND \"resource\" = 'vip__management' AND $timeFilter GROUP BY time($interval)",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "hostname",
-                  "value": "/$server/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "resource",
-                  "value": "vip__management"
-                }
-              ]
-            }
-          ],
-          "thresholds": "0,1",
-          "title": "Management VIP",
-          "type": "singlestat",
-          "valueFontSize": "50%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            },
-            {
-              "op": "=",
-              "text": "ACTIVE",
-              "value": "1"
-            },
-            {
-              "op": "=",
-              "text": "INACTIVE",
-              "value": "0"
             }
           ],
           "valueName": "current"
@@ -560,7 +421,7 @@
             "col": 0,
             "desc": true
           },
-          "span": 4,
+          "span": 6,
           "styles": [
             {
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
@@ -628,116 +489,6 @@
           "type": "table"
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "format": "s",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 11,
-          "interval": ">60s",
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "targets": [
-            {
-              "column": "value",
-              "dsType": "influxdb",
-              "function": "mean",
-              "groupBy": [
-                {
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
-              "interval": "",
-              "measurement": "haproxy_uptime",
-              "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_uptime\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval)",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "hostname",
-                  "value": "/$server/"
-                }
-              ]
-            }
-          ],
-          "thresholds": "",
-          "title": "Uptime",
-          "type": "singlestat",
-          "valueFontSize": "50%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
-        },
-        {
           "aliasColors": {},
           "bars": false,
           "datasource": null,
@@ -770,7 +521,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 6,
+          "span": 12,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -995,18 +746,6 @@
               "show": true
             }
           ]
-        },
-        {
-          "content": "",
-          "editable": true,
-          "error": false,
-          "id": 24,
-          "links": [],
-          "mode": "markdown",
-          "span": 4,
-          "style": {},
-          "title": "",
-          "type": "text"
         }
       ],
       "showTitle": true,
@@ -3105,5 +2844,5 @@
   },
   "timezone": "browser",
   "title": "HAProxy",
-  "version": 4
+  "version": 5
 }
