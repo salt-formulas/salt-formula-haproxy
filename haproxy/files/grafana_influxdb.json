@@ -18,10 +18,10 @@
     ]
   },
   "editable": true,
+  "gnetId": null,
   "hideControls": false,
   "id": null,
   "links": [],
-  "originalTitle": "HAProxy",
   "refresh": "1m",
   "rows": [
     {
@@ -52,6 +52,17 @@
           "id": 23,
           "interval": "> 60s",
           "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
@@ -59,6 +70,13 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
           "span": 2,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -179,6 +197,17 @@
           "id": 1,
           "interval": ">60s",
           "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
           "maxDataPoints": 100,
           "nullPointMode": "null as zero",
           "nullText": null,
@@ -186,6 +215,13 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
           "span": 2,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -286,6 +322,17 @@
           "id": 19,
           "interval": ">60s",
           "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
           "maxDataPoints": 100,
           "nullPointMode": "null as zero",
           "nullText": null,
@@ -293,6 +340,13 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
           "span": 2,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -391,8 +445,19 @@
             "thresholdMarkers": true
           },
           "id": 16,
-          "interval": ">60s",
+          "interval": "",
           "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
           "maxDataPoints": 100,
           "nullPointMode": "null as zero",
           "nullText": null,
@@ -400,6 +465,13 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
           "span": 2,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -413,17 +485,10 @@
               "dsType": "influxdb",
               "fill": "",
               "function": "last",
-              "groupBy": [
-                {
-                  "params": [
-                    "auto"
-                  ],
-                  "type": "time"
-                }
-              ],
+              "groupBy": [],
               "measurement": "haproxy_backend_status",
               "policy": "default",
-              "query": "SELECT last(\"value\") FROM \"haproxy_backend_status\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT last(\"value\") FROM \"haproxy_backend_status\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /^$service$/ AND $timeFilter",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -444,12 +509,19 @@
               "tags": [
                 {
                   "key": "hostname",
+                  "operator": "=~",
                   "value": "/$server/"
+                },
+                {
+                  "key": "backend",
+                  "operator": "=~",
+                  "value": "/^$service$/"
                 }
               ]
             }
           ],
-          "thresholds": "0,1",
+          "thresholds": "0,0.5",
+          "timeFrom": null,
           "title": "Backend status ($service)",
           "type": "singlestat",
           "valueFontSize": "50%",
@@ -578,6 +650,17 @@
           "id": 11,
           "interval": ">60s",
           "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
           "maxDataPoints": 100,
           "nullPointMode": "connected",
           "nullText": null,
@@ -585,6 +668,13 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
           "span": 2,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -882,6 +972,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -1071,6 +1162,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -1428,6 +1520,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -1653,6 +1746,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -1867,6 +1961,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -2045,6 +2140,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -2402,6 +2498,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -2627,6 +2724,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "individual"
           },
           "type": "graph",
@@ -2889,6 +2987,7 @@
           "tooltip": {
             "msResolution": false,
             "shared": true,
+            "sort": 0,
             "value_type": "cumulative"
           },
           "type": "graph",
@@ -3006,5 +3105,5 @@
   },
   "timezone": "browser",
   "title": "HAProxy",
-  "version": 3
+  "version": 4
 }
