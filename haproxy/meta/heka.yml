@@ -96,6 +96,7 @@ aggregator:
   alarm_cluster:
     haproxy_check:
       policy: majority_of_members
+      alerting: enabled_with_notification
       match:
         service: haproxy
       group_by: hostname
@@ -103,9 +104,11 @@ aggregator:
       - haproxy_check
       dimension:
         cluster_name: haproxy-openstack
+        nagios_host: 00-top-clusters
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
     {{ listen_name }}:
       policy: highest_severity
+      alerting: enabled
       match:
         backend: {{ listen_name }}
       members:
@@ -115,6 +118,7 @@ aggregator:
 {%- endif %}
       dimension:
         service: {{ listen.service_name|default(listen_name) }}
+        nagios_host: 01-service-clusters
 {%- endfor %}
 
 {%- endif %}
