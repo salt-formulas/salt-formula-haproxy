@@ -9,7 +9,7 @@
         "iconSize": 13,
         "lineColor": "rgba(255, 96, 96, 0.592157)",
         "name": "Status",
-        "query": "select title,tags,text from annotations where $timeFilter and cluster = 'haproxy'",
+        "query": "select title,tags,text from annotations where $timeFilter and cluster = 'haproxy-openstack'",
         "showLine": true,
         "tagsColumn": "tags",
         "textColumn": "text",
@@ -2844,5 +2844,5 @@
   },
   "timezone": "browser",
   "title": "HAProxy",
-  "version": 5
+  "version": 6
 }
