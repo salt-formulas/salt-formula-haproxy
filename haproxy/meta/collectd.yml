@@ -1,0 +1,9 @@
+{%- from "haproxy/map.jinja" import proxy with context %}
+{%- if proxy.enabled %}
+local_plugin:
+  haproxy:
+    plugin: python
+    template: haproxy/files/collectd_haproxy.conf
+    socket: {{ proxy.stats_socket }}
+{%- endif %}
+
