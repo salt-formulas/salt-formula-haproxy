@@ -1,4 +1,4 @@
 dashboard:
   haproxy:
     format: json
-    template: haproxy/files/grafana_influxdb.json
+    template: haproxy/files/grafana_dashboards/haproxy_influxdb.json
