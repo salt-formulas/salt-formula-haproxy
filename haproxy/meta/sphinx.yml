@@ -32,5 +32,6 @@ doc:
           address: "{{ listen.binds.0.address }}:{{ listen.binds.0.port }}"
           protocol: tcp
           {%- endif %}
+          {%- endif %}
         {%- endif %}
         {%- endfor %}
