@@ -14,7 +14,7 @@ metric_collector:
         periods: 0
         function: last
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
-    {{ listen_name }}_backends_all_down:
+    haproxy_{{ listen_name }}_backends_all_down:
       description: 'All API backends are down for {{ listen_name }}'
       severity: down
       rules:
@@ -27,7 +27,7 @@ metric_collector:
         window: 60
         periods: 0
         function: last
-    {{ listen_name }}_backends_majority_down:
+    haproxy_{{ listen_name }}_backends_majority_down:
       description: 'Less than 50% of backends are up for {{ listen_name }}'
       severity: critical
       rules:
@@ -40,7 +40,7 @@ metric_collector:
         window: 60
         periods: 0
         function: last
-    {{ listen_name }}_backends_one_down:
+    haproxy_{{ listen_name }}_backends_one_down:
       description: 'At least one API backend is down for {{ listen_name }}'
       severity: warning
       rules:
@@ -54,7 +54,7 @@ metric_collector:
         periods: 0
         function: last
 {%- if listen.get('type', None) == 'openstack-service' %}
-    {{ listen_name }}_http_errors:
+    haproxy_{{ listen_name }}_http_errors:
       description: 'Too many 5xx HTTP errors have been detected on {{ listen_name }}'
       severity: warning
       rules:
@@ -76,18 +76,18 @@ metric_collector:
       dimension:
         service: haproxy
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
-    {{ listen_name }}_backends:
+    haproxy_{{ listen_name }}_backends:
       alerting: enabled
       triggers:
-      - {{ listen_name }}_backends_all_down
-      - {{ listen_name }}_backends_majority_down
-      - {{ listen_name }}_backends_one_down
+      - haproxy_{{ listen_name }}_backends_all_down
+      - haproxy_{{ listen_name }}_backends_majority_down
+      - haproxy_{{ listen_name }}_backends_one_down
       dimension:
         backend: {{ listen_name }}
 {%- if listen.get('type', None) == 'openstack-service' %}
     {{ listen_name }}_http_errors:
       triggers:
-      - {{ listen_name }}_http_errors
+      - haproxy_{{ listen_name }}_http_errors
       dimension:
         backend: {{ listen_name }}
 {%- endif %}
@@ -106,15 +106,15 @@ aggregator:
         cluster_name: haproxy-openstack
         nagios_host: 00-top-clusters
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
-    {{ listen_name }}:
+    haproxy_{{ listen_name }}:
       policy: highest_severity
       alerting: enabled
       match:
         backend: {{ listen_name }}
       members:
-      - {{ listen_name }}_backends
+      - haproxy_{{ listen_name }}_backends
 {%- if listen.get('type', None) == 'openstack-service' %}
-      - {{ listen_name }}_http_errors
+      - haproxy_{{ listen_name }}_http_errors
 {%- endif %}
       dimension:
         service: {{ listen.service_name|default(listen_name) }}
