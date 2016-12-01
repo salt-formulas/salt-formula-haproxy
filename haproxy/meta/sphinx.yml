@@ -24,7 +24,7 @@ doc:
           {%- else %}
           mode: {{ listen.mode|default('tcp') }}
           {%- endif %}
-          {%- if listen.type in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
+          {%- if listen.get('type', 'default') in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
           {%- if listen.type|default(None) in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] or listen.mode|default('tcp') == 'http' %}
           address: "http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/"
           protocol: http
