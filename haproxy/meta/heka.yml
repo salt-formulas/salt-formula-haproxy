@@ -74,7 +74,7 @@ metric_collector:
       triggers:
       - haproxy_check
       dimension:
-        service: haproxy
+        service: haproxy-check
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
     haproxy_{{ listen_name }}_backends:
       alerting: enabled
@@ -95,11 +95,21 @@ metric_collector:
 aggregator:
   alarm_cluster:
     haproxy_check:
-      policy: majority_of_members
+      policy: availability_of_members
+      alerting: enabled
+      match:
+        service: haproxy-check
+      group_by: hostname
+      members:
+      - haproxy_check
+      dimension:
+        service: haproxy-openstack
+        nagios_host: 01-service-clusters
+    haproxy:
+      policy: highest_severity
       alerting: enabled_with_notification
       match:
-        service: haproxy
-      group_by: hostname
+        service: haproxy-openstack
       members:
       - haproxy_check
       dimension:
