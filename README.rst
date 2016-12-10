@@ -225,6 +225,9 @@ registries)
               - httpchk
               - httpclose
               - httplog
+            sticks:
+              - stick on src
+              - stick-table type ip size 200k expire 2m
             acl:
               is_docker: "path_reg ^/v[12][/.]*"
             http_request:
