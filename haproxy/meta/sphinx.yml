@@ -1,8 +1,7 @@
 {%- from "haproxy/map.jinja" import proxy with context %}
-{%- from "linux/map.jinja" import network with context -%}
 doc:
   name: HAProxy
-  description: The Reliable, High Performance TCP/HTTP Load Balancer. 
+  description: The Reliable, High Performance TCP/HTTP Load Balancer.
   role:
     proxy:
       name: proxy
@@ -11,9 +10,9 @@ doc:
           value: "{{ salt['cmd.run']('haproxy -v')|replace("HA-Proxy version ", '') }}"
       endpoint:
         {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
-        {%- if listen.get('check', True) %}
-        {%- if listen.binds.0.address in ["0.0.0.0", "*", "\*"] %}
-        {% if grains.ipv4[0] == '127.0.0.1' %}{% set address =  grains.ipv4[1] %}{% else %}{% set address =  grains.ipv4[0] %}{% endif %}
+        {%- if listen.binds.0.address not in ["127.0.0.1", "localhost", "::1"] %}
+        {%- if listen.binds.0.address in ["0.0.0.0", "::"] %}
+        {%- set address = grains.ipv4.1 %}
         {%- else %}
         {%- set address = listen.binds.0.address %}
         {%- endif %}
@@ -23,15 +22,14 @@ doc:
           type: {{ listen.type }}
           {%- else %}
           mode: {{ listen.mode|default('tcp') }}
+          type: {{ listen.mode|default('tcp') }}
           {%- endif %}
-          {%- if listen.get('type', 'default') in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] %}
-          {%- if listen.type|default(None) in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin'] or listen.mode|default('tcp') == 'http' %}
-          address: "http://{{ listen.binds.0.address }}:{{ listen.binds.0.port }}/"
+          {%- if listen.type|default(None) in ['general-service', 'openstack-service', 'http', 'contrail-api', 'admin', 'stats'] or listen.mode|default('tcp') == 'http' %}
+          address: "http://{{ address|default(listen.binds.0.address) }}:{{ listen.binds.0.port }}/"
           protocol: http
           {%- else %}
-          address: "{{ listen.binds.0.address }}:{{ listen.binds.0.port }}"
+          address: "{{ address|default(listen.binds.0.address) }}:{{ listen.binds.0.port }}"
           protocol: tcp
-          {%- endif %}
           {%- endif %}
         {%- endif %}
         {%- endfor %}
