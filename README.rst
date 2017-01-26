@@ -252,6 +252,42 @@ registries)
                 port: 8082
                 params: backup check
 
+Custom listener with tcp-check options specified (for Redis cluster with Sentinel)
+
+.. code-block:: yaml
+
+  haproxy:
+    proxy:
+      listen:
+        redis_cluster:
+          service_name: redis
+          check:
+            tcp:
+              enabled: True
+              options:
+                - send PING\r\n
+                - expect string +PONG
+                - send info\ replication\r\n
+                - expect string role:master
+                - send QUIT\r\n
+                - expect string +OK
+          binds:
+            - address: ${_param:cluster_address}
+              port: 6379
+          servers:
+            - name: ${_param:cluster_node01_name}
+              host: ${_param:cluster_node01_address}
+              port: 6379
+              params: check inter 1s
+            - name: ${_param:cluster_node02_name}
+              host: ${_param:cluster_node02_address}
+              port: 6379
+              params: check inter 1s
+            - name: ${_param:cluster_node03_name}
+              host: ${_param:cluster_node03_address}
+              port: 6379
+              params: check inter 1s
+
 Read more
 =========
 
