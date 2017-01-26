@@ -2,3 +2,18 @@ dashboard:
   haproxy:
     format: json
     template: haproxy/files/grafana_dashboards/haproxy_influxdb.json
+  main:
+    row:
+      ost-middleware:
+        title: Middleware
+        panel:
+          haproxy:
+            title: HAProxy
+            links:
+            - dashboard: HAProxy
+              title: HAProxy
+              type: dashboard
+            target:
+              cluster_status:
+                rawQuery: true
+                query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'haproxy-openstack' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
