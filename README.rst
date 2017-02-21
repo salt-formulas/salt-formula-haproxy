@@ -261,7 +261,7 @@ Custom listener with tcp-check options specified (for Redis cluster with Sentine
       listen:
         redis_cluster:
           service_name: redis
-          check:
+          health-check:
             tcp:
               enabled: True
               options:
