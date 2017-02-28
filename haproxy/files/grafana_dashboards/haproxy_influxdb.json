@@ -245,7 +245,7 @@
               "interval": "",
               "measurement": "haproxy_uptime",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_uptime\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_uptime\" WHERE \"hostname\" =~ /^$server/ AND $timeFilter GROUP BY time($interval)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -267,7 +267,13 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -349,7 +355,7 @@
               "groupBy": [],
               "measurement": "haproxy_backend_status",
               "policy": "default",
-              "query": "SELECT last(\"value\") FROM \"haproxy_backend_status\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /^$service$/ AND $timeFilter",
+              "query": "SELECT last(\"value\") FROM \"haproxy_backend_status\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /^$service$/ AND $timeFilter",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -371,12 +377,18 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "key": "backend",
                   "operator": "=~",
                   "value": "/^$service$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -546,7 +558,7 @@
               ],
               "measurement": "haproxy_connections",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_connections\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_connections\" WHERE \"hostname\" =~ /^$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -567,7 +579,13 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -593,7 +611,7 @@
               "hide": false,
               "measurement": "haproxy_pipes_free",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_pipes_free\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_pipes_free\" WHERE \"hostname\" =~ /^$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": false,
               "refId": "B",
               "resultFormat": "time_series",
@@ -614,7 +632,13 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -642,7 +666,7 @@
               "interval": "",
               "measurement": "haproxy_pipes_used",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_pipes_used\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_pipes_used\" WHERE \"hostname\" =~ /^$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": false,
               "refId": "C",
               "resultFormat": "time_series",
@@ -663,7 +687,13 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -690,7 +720,7 @@
               "interval": "",
               "measurement": "haproxy_tasks",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_tasks\" WHERE \"hostname\" =~ /$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_tasks\" WHERE \"hostname\" =~ /^$server/ AND $timeFilter GROUP BY time($interval) fill(null)",
               "rawQuery": false,
               "refId": "D",
               "resultFormat": "time_series",
@@ -711,7 +741,13 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -812,7 +848,7 @@
               "interval": "",
               "measurement": "haproxy_frontend_bytes_in",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_bytes_in\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_bytes_in\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -834,13 +870,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -862,7 +904,7 @@
               "interval": "",
               "measurement": "haproxy_frontend_bytes_out",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_bytes_out\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_bytes_out\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -884,13 +926,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -980,7 +1028,7 @@
               "interval": "",
               "measurement": "haproxy_frontend_response_1xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_1xx\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_1xx\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -1002,13 +1050,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1028,7 +1082,7 @@
               ],
               "measurement": "haproxy_frontend_response_2xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_2xx\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_2xx\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -1050,13 +1104,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1076,7 +1136,7 @@
               ],
               "measurement": "haproxy_frontend_response_3xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_3xx\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_3xx\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -1098,13 +1158,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1124,7 +1190,7 @@
               ],
               "measurement": "haproxy_frontend_response_4xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_4xx\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_4xx\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval)",
               "rawQuery": true,
               "refId": "D",
               "resultFormat": "time_series",
@@ -1146,13 +1212,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1172,7 +1244,7 @@
               ],
               "measurement": "haproxy_frontend_response_5xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s)  FROM \"haproxy_frontend_response_5xx\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s)  FROM \"haproxy_frontend_response_5xx\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "E",
               "resultFormat": "time_series",
@@ -1194,13 +1266,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1220,7 +1298,7 @@
               ],
               "measurement": "haproxy_frontend_response_other",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_other\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_response_other\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "F",
               "resultFormat": "time_series",
@@ -1242,13 +1320,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -1343,7 +1427,7 @@
               "hide": false,
               "measurement": "haproxy_frontend_session_current",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_frontend_session_current\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_frontend_session_current\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -1364,12 +1448,18 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1396,7 +1486,7 @@
               "interval": "",
               "measurement": "haproxy_frontend_session_current",
               "policy": "default",
-              "query": "SELECT max(\"value\") FROM \"haproxy_frontend_session_current\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
+              "query": "SELECT max(\"value\") FROM \"haproxy_frontend_session_current\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
               "rawQuery": false,
               "refId": "B",
               "resultFormat": "time_series",
@@ -1417,12 +1507,18 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1448,7 +1544,7 @@
               "interval": "",
               "measurement": "haproxy_frontend_session_current",
               "policy": "default",
-              "query": "SELECT min(\"value\") FROM \"haproxy_frontend_session_current\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
+              "query": "SELECT min(\"value\") FROM \"haproxy_frontend_session_current\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
               "rawQuery": false,
               "refId": "C",
               "resultFormat": "time_series",
@@ -1469,12 +1565,18 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/$$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -1563,7 +1665,7 @@
               ],
               "measurement": "haproxy_frontend_error_requests",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_error_requests\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_error_requests\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -1585,13 +1687,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1611,7 +1719,7 @@
               ],
               "measurement": "haproxy_frontend_denied_requests",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_denied_requests\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_denied_requests\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -1633,13 +1741,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -1660,7 +1774,7 @@
               ],
               "measurement": "haproxy_frontend_denied_responses",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_denied_responses\" WHERE \"hostname\" =~ /$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_frontend_denied_responses\" WHERE \"hostname\" =~ /^$server/ AND \"frontend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -1682,13 +1796,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "frontend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -1790,7 +1910,7 @@
               "interval": "",
               "measurement": "haproxy_backend_bytes_in",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_bytes_in\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_bytes_in\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -1812,13 +1932,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -1840,7 +1966,7 @@
               "interval": "",
               "measurement": "haproxy_backend_bytes_out",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_bytes_out\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_bytes_out\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -1862,13 +1988,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -1958,7 +2090,7 @@
               "interval": "",
               "measurement": "haproxy_backend_response_1xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_1xx\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_1xx\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -1980,13 +2112,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2006,7 +2144,7 @@
               ],
               "measurement": "haproxy_backend_response_2xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_2xx\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_2xx\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -2028,13 +2166,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2054,7 +2198,7 @@
               ],
               "measurement": "haproxy_backend_response_3xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_3xx\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_3xx\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -2076,13 +2220,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2102,7 +2252,7 @@
               ],
               "measurement": "haproxy_backend_response_4xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_4xx\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_4xx\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "D",
               "resultFormat": "time_series",
@@ -2124,13 +2274,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2150,7 +2306,7 @@
               ],
               "measurement": "haproxy_backend_response_5xx",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_5xx\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_5xx\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "E",
               "resultFormat": "time_series",
@@ -2172,13 +2328,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2198,7 +2360,7 @@
               ],
               "measurement": "haproxy_backend_response_other",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_other\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_response_other\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "F",
               "resultFormat": "time_series",
@@ -2220,13 +2382,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -2321,7 +2489,7 @@
               "hide": false,
               "measurement": "haproxy_backend_session_current",
               "policy": "default",
-              "query": "SELECT mean(\"value\") FROM \"haproxy_backend_session_current\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
+              "query": "SELECT mean(\"value\") FROM \"haproxy_backend_session_current\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
               "rawQuery": false,
               "refId": "A",
               "resultFormat": "time_series",
@@ -2342,12 +2510,18 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2374,7 +2548,7 @@
               "interval": "",
               "measurement": "haproxy_backend_session_current",
               "policy": "default",
-              "query": "SELECT max(\"value\") FROM \"haproxy_backend_session_current\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
+              "query": "SELECT max(\"value\") FROM \"haproxy_backend_session_current\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
               "rawQuery": false,
               "refId": "B",
               "resultFormat": "time_series",
@@ -2395,12 +2569,18 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             },
@@ -2426,7 +2606,7 @@
               "interval": "",
               "measurement": "haproxy_backend_session_current",
               "policy": "default",
-              "query": "SELECT min(\"value\") FROM \"haproxy_backend_session_current\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
+              "query": "SELECT min(\"value\") FROM \"haproxy_backend_session_current\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter GROUP BY time($interval) fill(0)",
               "rawQuery": false,
               "refId": "C",
               "resultFormat": "time_series",
@@ -2447,12 +2627,18 @@
               "tags": [
                 {
                   "key": "hostname",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ]
             }
@@ -2539,7 +2725,7 @@
               ],
               "measurement": "haproxy_backend_error_connection",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_error_connection\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_error_connection\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "A",
               "resultFormat": "time_series",
@@ -2561,13 +2747,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -2586,7 +2778,7 @@
               ],
               "measurement": "haproxy_backend_error_responses",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_error_responses\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_error_responses\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "B",
               "resultFormat": "time_series",
@@ -2608,13 +2800,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -2636,7 +2834,7 @@
               "interval": "",
               "measurement": "haproxy_backend_denied_requests",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_denied_requests\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_denied_requests\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "C",
               "resultFormat": "time_series",
@@ -2658,13 +2856,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -2686,7 +2890,7 @@
               "interval": "",
               "measurement": "haproxy_backend_denied_responses",
               "policy": "default",
-              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_denied_responses\" WHERE \"hostname\" =~ /$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
+              "query": "SELECT derivative(first(value),1s) FROM \"haproxy_backend_denied_responses\" WHERE \"hostname\" =~ /^$server/ AND \"backend\" =~ /$service/ AND $timeFilter AND \"environment_label\" =~ /^$environment$/GROUP BY time($interval) fill(0)",
               "rawQuery": true,
               "refId": "D",
               "resultFormat": "time_series",
@@ -2708,13 +2912,19 @@
                 {
                   "key": "hostname",
                   "operator": "=~",
-                  "value": "/$server/"
+                  "value": "/^$server/"
                 },
                 {
                   "condition": "AND",
                   "key": "backend",
                   "operator": "=~",
                   "value": "/$service/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "environment_label",
+                  "operator": "=~",
+                  "value": "/^$environment$/"
                 }
               ],
               "target": ""
@@ -2844,5 +3054,5 @@
   },
   "timezone": "browser",
   "title": "HAProxy",
-  "version": 6
+  "version": 7
 }
