@@ -252,6 +252,41 @@ registries)
                 port: 8082
                 params: backup check
 
+It's also possible to use multiple certificates for one listener (eg. when
+it's bind on multiple interfaces):
+
+.. code-block:: yaml
+
+    haproxy:
+      proxy:
+        listen:
+          dummy_site:
+            mode: http
+            binds:
+              - address: 127.0.0.1
+                port: 8080
+                ssl:
+                  enabled: true
+                  key: |
+                    my super secret key follows
+                  cert: |
+                    certificate
+                  chain: |
+                    CA chain (if any)
+              - address: 127.0.1.1
+                port: 8081
+                ssl:
+                  enabled: true
+                  key: |
+                    my super secret key follows
+                  cert: |
+                    certificate
+                  chain: |
+                    CA chain (if any)
+
+Definition above will result in creation of ``/etc/haproxy/ssl/dummy_site``
+directory with files ``1-all.pem`` and ``2-all.pem`` (per binds).
+
 Custom listener with tcp-check options specified (for Redis cluster with Sentinel)
 
 .. code-block:: yaml
