@@ -27,9 +27,15 @@ haproxy_ssl:
   - require:
     - pkg: haproxy_packages
 
+{%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
+
 net.ipv4.ip_nonlocal_bind:
   sysctl.present:
     - value: 1
+
+{% endif %}
+
+{% if not grains.get('noservices', False) %}
 
 haproxy_service:
   service.running:
@@ -38,6 +44,8 @@ haproxy_service:
   - watch:
     - file: /etc/haproxy/haproxy.cfg
     - file: /etc/default/haproxy
+
+{% endif %}
 
 {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
   {%- if listen.get('enabled', True) %}
@@ -59,8 +67,10 @@ haproxy_service:
         chain: {{ bind.ssl.get('chain', '')|yaml }}
     - require:
       - file: haproxy_ssl
+    {% if not grains.get('noservices', False) %}
     - watch_in:
       - service: haproxy_service
+    {% endif %}
 
       {%- endif %}
     {%- endfor %}
