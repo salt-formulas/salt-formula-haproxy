@@ -7,6 +7,6 @@
     'RedHat': {
         'pkgs': ['haproxy'],
         'service': 'haproxy',
-        'stats_socket': '/run/haproxy/admin.sock',
+        'stats_socket': '/var/lib/haproxy/stats',
     },
 }, merge=salt['pillar.get']('haproxy:proxy')) %}
