@@ -14,6 +14,13 @@ provisioner:
   formula: haproxy
   grains:
     noservices: True
+  dependencies:
+    - name: galera
+      repo: git
+      source: https://github.com/salt-formulas/salt-formula-galera
+    - name: linux
+      repo: git
+      source: https://github.com/salt-formulas/salt-formula-linux
   state_top:
     base:
       "*":
@@ -50,6 +57,24 @@ suites:
     provisioner:
       pillars-from-files:
         haproxy.sls: tests/pillar/single_general_service.sls
+
+  - name: single_mysql_service
+    provisioner:
+      state_top:
+        base:
+          "*":
+            - linux
+            - galera
+            - haproxy
+      pillars:
+        top.sls:
+          base:
+            "*":
+              - galeracluster_debian_repo
+              - haproxy
+      pillars-from-files:
+        haproxy.sls: tests/pillar/single_mysql_service.sls
+        galeracluster_debian_repo.sls: tests/pillar/repo_galeracluster.sls
 
   - name: single_openstack_service
     provisioner:
