@@ -47,9 +47,6 @@ haproxy_service:
 
 {% endif %}
 
-
-//SET haproxy_clustercheck_list = []
-
 {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
   {%- if listen.get('enabled', True) %}
     {%- for bind in listen.binds %}
@@ -80,35 +77,32 @@ haproxy_service:
   {%- endif %}
 {%- endfor %}
 
-
-
 {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
 {%- if listen.get('enabled', True) and listen.get('type', mysql) %}
-  {%- set index = '_{0}_{1}'.format(listen.bind.address, listen.bind.port) %}
   {%- set _mysql_clustercheck = True %}
-/etc/xinetd.d/mysql_clustercheck{ index }}:
+/etc/xinetd.d/mysql_clustercheck_{{ listen_name }}:
   file.managed:
     - source: salt://haproxy/files/xinet.d_template
     - defaults:
-      - service:
+      service:
         user: nobody
-        server: '/usr/local/bin/clustercheck {{ listen.get('check_attr', {'user': 'clustercheck'}).user }} {{ listen.get('check_attr', {'pass': 'clustercheck'}).pass }} {{ listen.get('check_attr', {'available_when_donor': 'clustercheck'}).available_when_donor }} {{ listen.get('check_attr', {'available_when_readonly': 'clustercheck'}).available_when_readonly  }}'
+        server: '/usr/local/bin/mysql_clustercheck {{ listen.get('check_attr', {'user': 'clustercheck'}).user }} {{ listen.get('check_attr', {'pass': 'clustercheck'}).pass }} {{ listen.get('check_attr', {'available_when_donor': 'clustercheck'}).available_when_donor }} {{ listen.get('check_attr', {'available_when_readonly': 'clustercheck'}).available_when_readonly  }}'
         socket_type: stream
         port: 9200
     - require:
-      - pkg: xinetd
+      - pkg: xinetd_package_clustercheck
 
-xinetd_service{{ index }}:
+xinetd_service{{ listen_name }}:
   service.running:
-  - name: {{ xinetd.service }}
+  - name: xinetd
   - require:
     - file: /usr/local/bin/mysql_clustercheck
-    - file: /etc/xinetd.d/mysql_clustercheck{{ index }}
+    - file: /etc/xinetd.d/mysql_clustercheck_{{ listen_name }}
 
 {%- endif %}
 {%- endfor %}
 
-{%- if _mysql_clustercheck is defined and _mysql_clustercheck | default(False) %}
+
 clustercheck_dir:
   file.directory:
   - name: /usr/local/bin/
@@ -118,7 +112,7 @@ clustercheck_dir:
 
 /usr/local/bin/mysql_clustercheck:
   file.managed:
-    - source: salt://haproxy/files/clustercheck.sh
+    - source: salt://haproxy/files/mysql_clustercheck.sh
     - user: root
     - group: root
     - mode: 755
@@ -129,7 +123,6 @@ xinetd_package_clustercheck:
   pkg.installed:
   - name: xinetd
 
-{%- endif %}
 
 
 {%- endif %}
