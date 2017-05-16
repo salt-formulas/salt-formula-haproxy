@@ -84,7 +84,7 @@ haproxy_service:
 
 {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
 {%- if listen.get('enabled', True) and listen.get('type', mysql) %}
-  {%- index = '_{0}_{1}'.format(listen.bind.address, listen.bind.port) %}
+  {%- set index = '_{0}_{1}'.format(listen.bind.address, listen.bind.port) %}
   {%- set _mysql_clustercheck = True %}
 /etc/xinetd.d/mysql_clustercheck{ index }}:
   file.managed:
@@ -92,7 +92,7 @@ haproxy_service:
     - defaults:
       - service:
         user: nobody
-        server: '/usr/local/bin/clustercheck {{ listen.get('check_attr', {'user': 'clustercheck'}).user listen.get('check_attr', {'pass': 'clustercheck'}).pass listen.get('check_attr', {'available_when_donor': 'clustercheck'}).available_when_donor listen.get('check_attr', {'available_when_readonly': 'clustercheck'}).available_when_readonly  }}'
+        server: '/usr/local/bin/clustercheck {{ listen.get('check_attr', {'user': 'clustercheck'}).user }} {{ listen.get('check_attr', {'pass': 'clustercheck'}).pass }} {{ listen.get('check_attr', {'available_when_donor': 'clustercheck'}).available_when_donor }} {{ listen.get('check_attr', {'available_when_readonly': 'clustercheck'}).available_when_readonly  }}'
         socket_type: stream
         port: 9200
     - require:
