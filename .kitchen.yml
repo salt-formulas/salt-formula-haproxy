@@ -51,6 +51,22 @@ suites:
       pillars-from-files:
         haproxy.sls: tests/pillar/single_general_service.sls
 
+  - name: single_mysql_service
+    provisioner:
+      state_top:
+        base:
+          "*":
+            - galera
+            - haproxy
+      pillars:
+        top.sls:
+          base:
+            "*":
+              - galera
+              - haproxy
+      pillars-from-files:
+        haproxy.sls: tests/pillar/single_mysql_service.sls
+
   - name: single_openstack_service
     provisioner:
       pillars-from-files:
