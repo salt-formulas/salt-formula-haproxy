@@ -108,6 +108,11 @@ Sample pillar with custom logging
           listens:
           - name: mysql
             type: mysql
+            check_attr:
+              user: clustercheck
+              pass: clustercheck
+              available_when_donor: 0
+              available_when_readonly: 1
             binds:
             - address: 10.0.88.70
               port: 3306

@@ -1,0 +1,16 @@
+# default: service.get('default_state', 'on')
+# description: service.name 
+
+service service.name 
+{
+	disable = service.get('disable', 'no')
+	flags = service.get('flags', 'REUSE')
+	socket_type = service.get('socket_type')
+	port = service.get('port')
+	wait = service.get('wait', 'no')
+	user = service.get('user')
+	server = service.get('server')
+	log_on_failure += service.get('log_on_failure', 'USERID')
+	only_from = service.get('only_from', '0.0.0.0/0')
+	per_source = service.get('per_source','UNLIMITED')
+} 
