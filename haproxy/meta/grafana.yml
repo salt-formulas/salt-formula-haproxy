@@ -1,5 +1,10 @@
 dashboard:
-  haproxy:
+  haproxy_prometheus:
+    datasource: prometheus
+    format: json
+    template: haproxy/files/grafana_dashboards/haproxy_prometheus.json
+  haproxy_influxdb:
+    datasource: influxdb
     format: json
     template: haproxy/files/grafana_dashboards/haproxy_influxdb.json
   main:
