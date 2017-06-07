@@ -1,0 +1,8 @@
+{%- from "haproxy/map.jinja" import proxy with context %}
+{%- if proxy.enabled %}
+{%- set servers = [proxy.stats_socket] %}
+agent:
+  input:
+    haproxy:
+      servers: {{ servers|yaml }}
+{%- endif %}
