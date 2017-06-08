@@ -1,0 +1,56 @@
+{%- if pillar.haproxy.proxy is defined %}
+{% raw %}
+server:
+  alert:
+    HAproxyHTTPResponse5xx:
+      if: >-
+        irate(haproxy_http_response_5xx[1m]) > 1
+      for: 2m
+      labels:
+        severity: warning
+        service: "haproxy/{{ $labels.proxy }}"
+      annotations:
+        summary: HTTP 5xx responses on '{{ $labels.proxy }}' proxy (host {{ $labels.host }})
+        description: >-
+          Too many 5xx HTTP errors have been detected on the '{{ $labels.proxy }}' proxy for the last 2 minutes
+          ({{ $value }} error(s) per second)
+    HAproxyBackendWarning:
+      if: >-
+        max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy) - min by(proxy) (haproxy_active_servers{sv="BACKEND"}) >= 1
+      for: 5m
+      labels:
+        severity: warning
+        service: "haproxy/{{ $labels.proxy }}"
+      annotations:
+        summary: "At least one backend is down for '{{ $labels.proxy }}' proxy for the last 5 minutes"
+        description: >-
+           {{ $value }} of backends are down for the '{{ $labels.proxy }}' proxy
+
+    HAproxyBackendCritical:
+      if: >-
+        (max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy)
+         - min by(proxy) (haproxy_active_servers{sv="BACKEND"})
+        )/ max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy) * 100 >= 50
+      for: 5m
+      labels:
+        severity: critical
+        service: "haproxy/{{ $labels.proxy }}"
+      annotations:
+        summary: "Less than 50% of backends are up for the '{{ $labels.proxy }}' proxy for the last 5 minutes"
+        description: >-
+           {{ $value }}% of backends are down for the '{{ $labels.proxy }}' proxy
+
+    HAproxyBackendDown:
+      if: >-
+        max(haproxy_active_servers{sv="BACKEND"}) by (proxy) + max(haproxy_backup_servers{sv="BACKEND"}) by (proxy) == 0
+      for: 2m
+      labels:
+        severity: down
+        service: "haproxy/{{ $labels.proxy }}"
+      annotations:
+        summary: "All backends are down for the '{{ $labels.proxy }}' proxy"
+        description: >-
+            The proxy '{{ $labels.proxy }}' has no active backend
+
+{% endraw %}
+{%- endif %}
