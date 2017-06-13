@@ -35,17 +35,16 @@ net.ipv4.ip_nonlocal_bind:
 
 {% endif %}
 
-{% if not grains.get('noservices', False) %}
-
 haproxy_service:
   service.running:
   - name: {{ proxy.service }}
   - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
     - file: /etc/haproxy/haproxy.cfg
     - file: /etc/default/haproxy
-
-{% endif %}
 
 {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
   {%- if listen.get('enabled', True) %}
@@ -67,10 +66,8 @@ haproxy_service:
         chain: {{ bind.ssl.get('chain', '')|yaml }}
     - require:
       - file: haproxy_ssl
-    {% if not grains.get('noservices', False) %}
     - watch_in:
       - service: haproxy_service
-    {% endif %}
 
       {%- endif %}
     {%- endfor %}
