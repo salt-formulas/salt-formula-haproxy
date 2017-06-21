@@ -830,7 +830,7 @@
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "",
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -850,7 +850,7 @@
         "refresh": 1,
         "refresh_on_load": true,
         "regex": "/proxy=\"(.+)\"/",
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -890,6 +890,6 @@
   },
   "timezone": "browser",
   "title": "Haproxy",
-  "version": 21
+  "version": 22
 }
 {% endraw %}
