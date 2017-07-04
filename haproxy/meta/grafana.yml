@@ -8,6 +8,7 @@ dashboard:
     format: json
     template: haproxy/files/grafana_dashboards/haproxy_influxdb.json
   main:
+    datasource: influxdb
     row:
       ost-middleware:
         title: Middleware
