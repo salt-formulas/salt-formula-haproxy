@@ -50,3 +50,8 @@ haproxy:
           host: 127.0.0.1
           port: 9100
           params: check inter 2000 rise 2 fall 3
+
+# For haproxy/meta/sensu.yml
+linux:
+  network:
+    fqdn: linux.ci.local

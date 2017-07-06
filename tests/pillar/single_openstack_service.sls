@@ -23,3 +23,8 @@ haproxy:
           host: 127.0.0.1
           port: 8776
           params: check inter 10s fastinter 2s downinter 3s rise 3 fall 3
+
+# For haproxy/meta/sensu.yml
+linux:
+  network:
+    fqdn: linux.ci.local
