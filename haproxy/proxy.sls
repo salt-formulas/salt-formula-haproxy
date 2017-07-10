@@ -27,6 +27,22 @@ haproxy_ssl:
   - require:
     - pkg: haproxy_packages
 
+haproxy_status_packages:
+  pkg.installed:
+  - pkgs:
+    - socat
+
+haproxy_status_sh:
+  file.managed:
+  - name: /usr/bin/haproxy-status.sh
+  - user: root
+  - group: root
+  - mode: 700
+  - source: salt://haproxy/files/haproxy-status.sh
+  - template: jinja
+  - require:
+    - pkg: haproxy_status_packages
+
 {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
 net.ipv4.ip_nonlocal_bind:
