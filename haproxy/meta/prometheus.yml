@@ -1,10 +1,14 @@
-{%- if pillar.haproxy.proxy is defined %}
-{% raw %}
+{%- if pillar.haproxy is defined and pillar.haproxy.proxy is defined %}
+{%- from "haproxy/map.jinja" import proxy with context %}
+{%- if proxy.enabled and proxy.listen is defined and proxy.listen|length > 0 %}
 server:
   alert:
-    HAproxyHTTPResponse5xx:
+{%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
+{%- set camel_case_name = listen_name.replace('-','_').split('_')|map('capitalize')|join('') %}
+    HAproxy{{ camel_case_name }}HTTPResponse5xx:
+{% raw %}
       if: >-
-        rate(haproxy_http_response_5xx{sv="FRONTEND"}[1m]) > 1
+        rate(haproxy_http_response_5xx{sv="FRONTEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[1m]) > 1
       for: 2m
       labels:
         severity: warning
@@ -14,9 +18,12 @@ server:
         description: >-
           Too many 5xx HTTP errors have been detected on the '{{ $labels.proxy }}' proxy for the last 2 minutes
           ({{ $value }} error(s) per second)
-    HAproxyBackendWarning:
+{% endraw %}
+    HAproxy{{ camel_case_name }}BackendWarning:
+{% raw %}
       if: >-
-        max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy) - min by(proxy) (haproxy_active_servers{sv="BACKEND"}) >= 1
+        max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h]))
+        - min (haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) >= 1
       for: 5m
       labels:
         severity: warning
@@ -25,12 +32,13 @@ server:
         summary: "At least one backend is down for '{{ $labels.proxy }}' proxy for the last 5 minutes"
         description: >-
            {{ $value }} of backends are down for the '{{ $labels.proxy }}' proxy
-
-    HAproxyBackendCritical:
+{% endraw %}
+    HAproxy{{ camel_case_name }}BackendCritical:
+{% raw %}
       if: >-
-        (max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy)
-         - min by(proxy) (haproxy_active_servers{sv="BACKEND"})
-        )/ max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy) * 100 >= 50
+        (max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h]))
+         - min (haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"})
+        )/ max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h])) * 100 >= 50
       for: 5m
       labels:
         severity: critical
@@ -39,10 +47,12 @@ server:
         summary: "Less than 50% of backends are up for the '{{ $labels.proxy }}' proxy for the last 5 minutes"
         description: >-
            {{ $value }}% of backends are down for the '{{ $labels.proxy }}' proxy
-
-    HAproxyBackendDown:
+{% endraw %}
+    HAproxy{{ camel_case_name }}BackendDown:
+{% raw %}
       if: >-
-        max(haproxy_active_servers{sv="BACKEND"}) by (proxy) + max(haproxy_backup_servers{sv="BACKEND"}) by (proxy) == 0
+        max(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"})
+        + max(haproxy_backup_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) == 0
       for: 2m
       labels:
         severity: down
@@ -51,6 +61,7 @@ server:
         summary: "All backends are down for the '{{ $labels.proxy }}' proxy"
         description: >-
             The proxy '{{ $labels.proxy }}' has no active backend
-
 {% endraw %}
+{%- endfor %}
+{%- endif %}
 {%- endif %}
