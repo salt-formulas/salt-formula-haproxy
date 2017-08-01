@@ -323,6 +323,44 @@ Custom listener with tcp-check options specified (for Redis cluster with Sentine
               port: 6379
               params: check inter 1s
 
+Frontend for routing between exists listeners via URL with SSL an redirects.
+You can use one backend for several URLs.
+
+.. code-block:: yaml
+
+  haproxy:
+    proxy:
+      listen:
+        service_proxy:
+          mode: http
+          balance: source
+          format: end
+          binds:
+           - address: ${_param:haproxy_bind_address}
+             port: 80
+             ssl: ${_param:haproxy_frontend_ssl}
+             ssl_port: 443
+          redirects:
+           - code: 301
+             location: domain.com/images
+             conditions:
+               - type: hdr_dom(host)
+                 condition: images.domain.com
+          acls:
+           - name: gerrit
+             conditions:
+               - type: hdr_dom(host)
+                 condition: gerrit.domain.com
+           - name: jenkins
+             conditions:
+               - type: hdr_dom(host)
+                 condition: jenkins.domain.com
+           - name: docker
+             backend: artifactroy
+             conditions:
+               - type: hdr_dom(host)
+                 condition: docker.domain.com
+
 Read more
 =========
 
