@@ -7,7 +7,7 @@ doc:
       name: proxy
       param:
         version:
-          value: "{{ salt['cmd.run']('haproxy -v 2>/dev/null || echo unknown')|replace('HA-Proxy version ', '') }}"
+          value: "{{ salt['cmd.shell']('haproxy -v 2>/dev/null || echo unknown')|replace('HA-Proxy version ', '') }}"
       endpoint:
         {%- for listen_name, listen in proxy.get('listen', {}).iteritems() %}
         {%- if listen.binds.0.address not in ["127.0.0.1", "localhost", "::1"] %}
