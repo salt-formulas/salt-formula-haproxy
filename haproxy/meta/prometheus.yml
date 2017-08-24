@@ -3,6 +3,17 @@
 {%- if proxy.enabled and proxy.listen is defined and proxy.listen|length > 0 %}
 server:
   alert:
+    HaproxyDown:
+{% raw %}
+      if: >-
+        haproxy_up != 1
+      labels:
+        severity: warning
+        service: haproxy
+      annotations:
+        summary: 'Haproxy service down'
+        description: 'Haproxy service is down on node {{ $labels.host }}'
+{% endraw %}
 {%- for listen_name, listen in proxy.listen.iteritems() if listen.get('check', True) %}
 {%- set camel_case_name = listen_name.replace('-','_').split('_')|map('capitalize')|join('') %}
     HAproxy{{ camel_case_name }}HTTPResponse5xx:
