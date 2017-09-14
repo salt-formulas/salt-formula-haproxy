@@ -33,8 +33,8 @@ server:
     HAproxy{{ camel_case_name }}BackendWarning:
 {% raw %}
       if: >-
-        max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h]))
-        - min (haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) >= 1
+        max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h])) by (proxy)
+        - min(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) by (proxy) >= 1
       for: 5m
       labels:
         severity: warning
@@ -47,9 +47,9 @@ server:
     HAproxy{{ camel_case_name }}BackendCritical:
 {% raw %}
       if: >-
-        (max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h]))
-         - min (haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"})
-        )/ max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h])) * 100 >= 50
+        (max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h])) by (proxy)
+         - min (haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) by (proxy)
+        ) / max(max_over_time(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}[12h])) by (proxy) * 100 >= 50
       for: 5m
       labels:
         severity: critical
@@ -62,8 +62,8 @@ server:
     HAproxy{{ camel_case_name }}BackendDown:
 {% raw %}
       if: >-
-        max(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"})
-        + max(haproxy_backup_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) == 0
+        max(haproxy_active_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) by (proxy)
+        + max(haproxy_backup_servers{sv="BACKEND",proxy="{% endraw %}{{ listen_name }}{% raw %}"}) by (proxy) == 0
       for: 2m
       labels:
         severity: down
