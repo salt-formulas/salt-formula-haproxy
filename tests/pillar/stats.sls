@@ -1,6 +1,8 @@
 haproxy:
   proxy:
     enabled: true
+    forwardfor:
+      enabled: false
     listen:
       admin_page:
         type: stats

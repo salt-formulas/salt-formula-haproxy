@@ -2,7 +2,7 @@
 HAproxy
 =======
 
-The Reliable, High Performance TCP/HTTP Load Balancer. 
+The Reliable, High Performance TCP/HTTP Load Balancer.
 
 
 Sample pillars
@@ -133,7 +133,7 @@ Sample pillar with custom logging
             - name: node1
               host: 10.0.88.13
               port: 5673
-              params: check inter 5000 rise 2 fall 3 
+              params: check inter 5000 rise 2 fall 3
             - name: node2
               host: 10.0.88.14
               port: 5673
@@ -189,7 +189,7 @@ Sample pillar with custom logging
             - name: node1
               host: 10.0.88.13
               port: 5673
-              params: check inter 5000 rise 2 fall 3 
+              params: check inter 5000 rise 2 fall 3
             - name: node2
               host: 10.0.88.14
               port: 5673
@@ -360,6 +360,36 @@ You can use one backend for several URLs.
              conditions:
                - type: hdr_dom(host)
                  condition: docker.domain.com
+
+Enable customisable ``forwardfor`` option in ``defaults`` section.
+
+.. code-block:: yaml
+
+  haproxy:
+    proxy:
+      enabled: true
+      mode: tcp
+      logging: syslog
+      max_connections: 1024
+      forwardfor:
+        enabled: true
+        except:
+        header:
+        if-none: false
+
+.. code-block:: yaml
+
+  haproxy:
+    proxy:
+      enabled: true
+      mode: tcp
+      logging: syslog
+      max_connections: 1024
+      forwardfor:
+        enabled: true
+        except: 127.0.0.1
+        header: X-Real-IP
+        if-none: false
 
 Read more
 =========
