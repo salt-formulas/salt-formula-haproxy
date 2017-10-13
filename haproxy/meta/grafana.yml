@@ -7,7 +7,7 @@ dashboard:
     datasource: influxdb
     format: json
     template: haproxy/files/grafana_dashboards/haproxy_influxdb.json
-  main:
+  main_influxdb:
     datasource: influxdb
     row:
       ost-middleware:
@@ -23,3 +23,18 @@ dashboard:
               cluster_status:
                 rawQuery: true
                 query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'haproxy-openstack' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+  main_prometheus:
+    datasource: prometheus
+    row:
+      ost-middleware:
+        title: Middleware
+        panel:
+          haproxy:
+            title: HAProxy
+            links:
+            - dashboard: HAProxy
+              title: HAProxy
+              type: dashboard
+            target:
+              cluster_status:
+                expr: avg(haproxy_up) by (name)
