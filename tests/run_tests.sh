@@ -139,6 +139,7 @@ prepare() {
 }
 
 run() {
+    salt_run grains.append 'ipv4' '0.0.0.0'
     for pillar in ${PILLARDIR}/*.sls; do
         grep ${FORMULA_NAME}: ${pillar} &>/dev/null || continue
         state_name=$(basename ${pillar%.sls})
