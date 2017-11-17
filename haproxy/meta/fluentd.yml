@@ -1,0 +1,36 @@
+{%- if pillar.get('fluentd', {}).get('agent', {}).get('enabled', False) %}
+agent:
+  config:
+    label:
+      haproxy:
+        input:
+          tail_haproxy:
+            type: tail
+            tag: haproxy.general
+            path: /var/log/haproxy.log
+            pos_file: {{ pillar.fluentd.agent.dir.positiondb }}/haproxy.pos
+            parser:
+              type: regexp
+              time_key: time
+              time_format: '%FT%H:%M:%S.%L%z'
+              keep_time_key: false
+              format: '/^\<(?<priority>[0-9]+)\>(?<time>[^ ]*) (?<host>[^ ]*) haproxy\[(?<pid>[0-9]+)\]?: *(?<Payload>.*)$/'
+        filter:
+          match_severity:
+            type: record_transformer
+            tag: haproxy.**
+            enable_ruby: true
+            remove_keys: priority
+            record:
+              - name: programname
+                value: haproxy
+              - name: Severity
+                value: "${ record['priority'].to_i % 8 }"
+              - name: severity_label
+                value: "${ {'DEBUG'=>7,'INFO'=>6,'NOTICE'=>5,'WARNING'=>4,'ERROR'=>3,'CRITICAL'=>2,'ALERT'=>1}.key(record['priority'].to_i % 8) }"
+        match:
+          push_to_default:
+            tag: haproxy.**
+            type: relabel
+            label: default_output
+{%- endif %}
