@@ -19,12 +19,12 @@ install:
 env:
     - PLATFORM=trevorj/salty-whales:trusty SUITE=admin
     - PLATFORM=trevorj/salty-whales:xenial SUITE=admin
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single_contrail
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single_contrail
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single_general_service
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single_general_service
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single_openstack_service
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single_openstack_service
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-contrail
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-contrail
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-general-service
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-general-service
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-openstack-service
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-openstack-service
     - PLATFORM=trevorj/salty-whales:trusty SUITE=stats
     - PLATFORM=trevorj/salty-whales:xenial SUITE=stats
 
@@ -33,7 +33,8 @@ before_script:
   - make test | tail
 
 script:
-  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test -t tests/integration
+  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   webhooks:
