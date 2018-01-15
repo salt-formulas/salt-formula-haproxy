@@ -10,6 +10,6 @@ Vcs-Git: https://github.com/tcpcloud/salt-formula-haproxy.git
 
 Package: salt-formula-haproxy
 Architecture: all
-Depends: ${misc:Depends}, salt-master, reclass
+Depends: ${misc:Depends}
 Description: HAproxy salt formula
  Configure HAproxy service.
