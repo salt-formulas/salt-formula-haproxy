@@ -4,9 +4,17 @@ haproxy:
     mode: tcp
     logging: syslog
     max_connections: 1024
+    nbproc: 4
+    cpu_map:
+      1: 0
+      2: 1
+      3: 2
+      4: 3
+    stats_bind_process: "1 2"
     listen:
       glance_api:
         type: openstack-service
+        bind_process: "1 2 3 4"
         binds:
         - address: 127.0.0.1
           port: 9292

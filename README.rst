@@ -391,6 +391,42 @@ Enable customisable ``forwardfor`` option in ``defaults`` section.
         header: X-Real-IP
         if-none: false
 
+Sample pillar with multiprocess multicore configuration
+
+.. code-block:: yaml
+
+  haproxy:
+    proxy:
+      enabled: True
+      nbproc: 4
+      cpu_map:
+        1: 0
+        2: 1
+        3: 2
+        4: 3
+      stats_bind_process: "1 2"
+      mode: http/tcp
+      logging: syslog
+      maxconn: 1024
+      timeout:
+        connect: 5000
+        client: 50000
+        server: 50000
+      listen:
+        https-in:
+          bind_process: "1 2 3 4"
+          binds:
+          - address: 0.0.0.0
+            port: 443
+          servers:
+          - name: server1
+            host: 10.0.0.1
+            port: 8443
+          - name: server2
+            host: 10.0.0.2
+            port: 8443
+            params: 'maxconn 256'
+
 Read more
 =========
 
