@@ -17,16 +17,21 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=admin
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=admin
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-contrail
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-contrail
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-general-service
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-general-service
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-openstack-service
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-openstack-service
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=stats
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=stats
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=admin
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-contrail
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-general-service
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-openstack-service
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=stats
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=admin
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-contrail
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-general-service
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-openstack-service
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=stats
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=admin
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=single-contrail
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=single-general-service
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=single-openstack-service
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=stats
 
 before_script:
   - set -o pipefail
