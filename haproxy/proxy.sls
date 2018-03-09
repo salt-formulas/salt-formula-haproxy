@@ -27,6 +27,17 @@ haproxy_ssl:
   - require:
     - pkg: haproxy_packages
 
+rate_limit_error_file:
+  file.managed:
+  - name: /etc/haproxy/errors/429.http11
+  - user: root
+  - group: root
+  - mode: 644
+  - source: salt://haproxy/files/errors/429.http11
+  - template: jinja
+  - require:
+    - pkg: haproxy_packages
+
 haproxy_status_packages:
   pkg.installed:
   - pkgs:
