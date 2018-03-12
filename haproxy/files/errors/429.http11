@@ -1,0 +1,9 @@
+HTTP/1.1 429 Too Many Requests
+Cache-Control: no-cache
+Connection: close
+Content-Type: text/html
+Content-Length: 118
+
+<html><body><h1>429 Too Many Requests</h1>
+You have sent too many requests in a given amount of time.
+</body></html>

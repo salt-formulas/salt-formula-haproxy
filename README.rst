@@ -427,6 +427,30 @@ Sample pillar with multiprocess multicore configuration
             port: 8443
             params: 'maxconn 256'
 
+Implement rate limiting, to prevent excessive requests
+This feature only works if using 'format: end'
+
+.. code-block:: yaml
+  haproxy:
+    proxy:
+      ...
+      listen:
+        nova_metadata_api:
+          ...
+          format: end
+          options:
+          - httpchk
+          - httpclose
+          - httplog
+          rate_limit:
+            duration: 900s
+            enabled: true
+            requests: 125
+            track: content
+          servers:
+            ...
+          type: http
+
 Read more
 =========
 
