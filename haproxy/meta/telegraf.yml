@@ -4,5 +4,8 @@
 agent:
   input:
     haproxy:
+      # Input plugin configuration
       servers: {{ servers|yaml }}
+      # Measurement filtering
+      fielddrop: [ "addr", "agent_status", "check_status", "cookie", "last_agt", "last_chk", "mode", "status", "tracked" ]
 {%- endif %}
