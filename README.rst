@@ -209,6 +209,83 @@ Sample pillar with custom logging
                 port: 5000
                 params: check
 
+Sample pillar with port range and port offset
+
+This is usefull in listen blocks for definition of multiple servers
+that differs only by port number in port range block. This situation
+can be result of multiple single-thread servers deployed in multi-core
+environment to better utilize the available cores.
+
+For example five contrail-api workers occupy ports ``9100-9104``.
+This can be achieved by using ``port_range_length`` in the pillar,
+``port_range_length: 5`` in this case.
+For skipping first worker (``worker_id 0``), because it has other
+responsibilities and to avoid overloading it by http requests
+use the ``port_range_start_offset`` in the pillar,
+``port_range_start_offset: 1`` in this case, it will only use ports
+9101-9104 (skipping 9100).
+
+- ``port_range_length`` parameter is used to calculate port range end
+- ``port_range_start_offset`` will skip first n ports in port range
+
+For backward compatibility, the name of the first server in port range
+has no ``pN`` suffix.
+
+The following sample will result in
+
+.. code-block:: text
+
+    listen contrail_api
+      bind 172.16.10.252:8082
+      option nolinger
+      balance leastconn
+      server ntw01p1 172.16.10.95:9101 check inter 2000 rise 2 fall 3
+      server ntw01p2 172.16.10.95:9102 check inter 2000 rise 2 fall 3
+      server ntw01p3 172.16.10.95:9103 check inter 2000 rise 2 fall 3
+      server ntw01p4 172.16.10.95:9104 check inter 2000 rise 2 fall 3
+      server ntw02 172.16.10.96:9100 check inter 2000 rise 2 fall 3
+      server ntw02p1 172.16.10.96:9101 check inter 2000 rise 2 fall 3
+      server ntw02p2 172.16.10.96:9102 check inter 2000 rise 2 fall 3
+      server ntw02p3 172.16.10.96:9103 check inter 2000 rise 2 fall 3
+      server ntw02p4 172.16.10.96:9104 check inter 2000 rise 2 fall 3
+      server ntw03 172.16.10.94:9100 check inter 2000 rise 2 fall 3
+      server ntw03p1 172.16.10.94:9101 check inter 2000 rise 2 fall 3
+      server ntw03p2 172.16.10.94:9102 check inter 2000 rise 2 fall 3
+      server ntw03p3 172.16.10.94:9103 check inter 2000 rise 2 fall 3
+      server ntw03p4 172.16.10.94:9104 check inter 2000 rise 2 fall 3
+
+.. code-block:: yaml
+
+    haproxy:
+      proxy:
+        listen:
+          contrail_api:
+            type: contrail-api
+            service_name: contrail
+            balance: leastconn
+            binds:
+            - address: 10.10.10.10
+              port: 8082
+            servers:
+            - name: ntw01
+              host: 10.10.10.11
+              port: 9100
+              port_range_length: 5
+              port_range_start_offset: 1
+              params: check inter 2000 rise 2 fall 3
+            - name: ntw02
+              host: 10.10.10.12
+              port: 9100
+              port_range_length: 5
+              port_range_start_offset: 0
+              params: check inter 2000 rise 2 fall 3
+            - name: ntw03
+              host: 10.10.10.13
+              port: 9100
+              port_range_length: 5
+              params: check inter 2000 rise 2 fall 3
+
+
 Custom more complex listener (for Artifactory and subdomains for docker
 registries)
 
