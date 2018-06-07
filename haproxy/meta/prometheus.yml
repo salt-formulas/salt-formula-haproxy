@@ -21,7 +21,7 @@ server:
         service: haproxy
       annotations:
         summary: "50% of HAProxy services are down"
-        description: "{{ $value }} HAProxy services within the {{ $labels.cluster }} cluster are down (at least 50%)."
+        description: "{{ $value }} HAProxy services (>= 50%) within the {{ $labels.cluster }} cluster are down."
     HaproxyServiceOutage:
       if: >-
          count(label_replace(haproxy_up, "cluster", "$1", "host", "([^0-9]+).+") != 1) by (cluster) == count(label_replace(haproxy_up, "cluster", "$1", "host", "([^0-9]+).+")) by (cluster)
@@ -57,7 +57,7 @@ server:
         service: haproxy
       annotations:
         summary: "50% of {{ $labels.proxy }} back ends are down"
-        description: "{{ $value }} {{ $labels.proxy }} back ends are down (at least 50%)."
+        description: "{{ $value }} {{ $labels.proxy }} back ends (>= 50%) are down."
     HaproxyBackendOutage:
       if: >-
         max(haproxy_active_servers{sv="BACKEND"}) by (proxy)
@@ -66,7 +66,7 @@ server:
         severity: critical
         service: haproxy
       annotations:
-        summary: "{{ $labels.proxy }} back-end outage"
+        summary: "{{ $labels.proxy }} back end outage"
         summary: "All {{ $labels.proxy }} back ends are down."
 {% endraw %}
 {%- endif %}
