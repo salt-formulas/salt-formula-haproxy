@@ -67,7 +67,7 @@ server:
         service: haproxy
       annotations:
         summary: "{{ $labels.proxy }} back end outage"
-        summary: "All {{ $labels.proxy }} back ends are down."
+        description: "All {{ $labels.proxy }} back ends are down."
 {% endraw %}
 {%- endif %}
 {%- endif %}
