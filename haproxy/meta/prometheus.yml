@@ -51,7 +51,8 @@ server:
         description: "The {{ $labels.proxy }} back end on the {{ $labels.host }} node is down."
     HaproxyBackendDownMajor:
       if: >-
-        max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy) - min(haproxy_active_servers{sv="BACKEND"}) by (proxy) >= 0.5 * max(max_over_time(haproxy_active_servers{sv="BACKEND"}[12h])) by (proxy)
+        0.5 * avg(sum(haproxy_active_servers{type="server"}) by (host, proxy) + sum(haproxy_backup_servers{type="server"}) by (host, proxy)) by (proxy) >=
+        avg(sum(haproxy_active_servers{type="backend"}) by (host, proxy) + sum(haproxy_backup_servers{type="backend"}) by (host, proxy)) by (proxy)
       labels:
         severity: major
         service: haproxy
