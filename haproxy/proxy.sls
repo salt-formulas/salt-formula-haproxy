@@ -35,6 +35,7 @@ rate_limit_error_file:
   - mode: 644
   - source: salt://haproxy/files/errors/429.http11
   - template: jinja
+  - makedirs: True
   - require:
     - pkg: haproxy_packages
 
