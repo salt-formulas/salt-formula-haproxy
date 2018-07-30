@@ -1,9 +1,8 @@
-=======
-HAproxy
-=======
+=====
+Usage
+=====
 
 The Reliable, High Performance TCP/HTTP Load Balancer.
-
 
 Sample pillars
 ==============
@@ -216,7 +215,7 @@ that differs only by port number in port range block. This situation
 can be result of multiple single-thread servers deployed in multi-core
 environment to better utilize the available cores.
 
-For example five contrail-api workers occupy ports ``9100-9104``.
+For example, five contrail-api workers occupy ports ``9100-9104``.
 This can be achieved by using ``port_range_length`` in the pillar,
 ``port_range_length: 5`` in this case.
 For skipping first worker (``worker_id 0``), because it has other
@@ -508,6 +507,7 @@ Implement rate limiting, to prevent excessive requests
 This feature only works if using 'format: end'
 
 .. code-block:: yaml
+
   haproxy:
     proxy:
       ...
@@ -532,40 +532,36 @@ Read more
 =========
 
 * https://github.com/jesusaurus/hpcs-salt-state/tree/master/haproxy
-* http://www.nineproductions.com/saltstack-ossec-state-using-reactor/ - example reactor usage.
-* https://gist.github.com/tomeduarte/6340205 - example on how to use peer from within a config file (using jinja)
-* http://youtu.be/jJJ8cfDjcTc?t=8m58s - from 9:00 on, a good overview of peer vs mine
+* http://www.nineproductions.com/saltstack-ossec-state-using-reactor/
+* https://gist.github.com/tomeduarte/6340205 - example on how to use peer
+  from within a config file (using jinja)
+* http://youtu.be/jJJ8cfDjcTc?t=8m58s - from 9:00 on, a good overview
+  of peer vs mine
 * https://github.com/russki/cluster-agents
 
 Documentation and Bugs
 ======================
 
-To learn how to install and update salt-formulas, consult the documentation
-available online at:
+* http://salt-formulas.readthedocs.io/
+   Learn how to install and update salt-formulas
 
-    http://salt-formulas.readthedocs.io/
+* https://github.com/salt-formulas/salt-formula-haproxy/issues
+   In the unfortunate event that bugs are discovered, report the issue to the
+   appropriate issue tracker. Use the Github issue tracker for a specific salt
+   formula
 
-In the unfortunate event that bugs are discovered, they should be reported to
-the appropriate issue tracker. Use Github issue tracker for specific salt
-formula:
+* https://launchpad.net/salt-formulas
+   For feature requests, bug reports, or blueprints affecting the entire
+   ecosystem, use the Launchpad salt-formulas project
 
-    https://github.com/salt-formulas/salt-formula-haproxy/issues
+* https://launchpad.net/~salt-formulas-users
+   Join the salt-formulas-users team and subscribe to mailing list if required
 
-For feature requests, bug reports or blueprints affecting entire ecosystem,
-use Launchpad salt-formulas project:
+* https://github.com/salt-formulas/salt-formula-haproxy
+   Develop the salt-formulas projects in the master branch and then submit pull
+   requests against a specific formula
 
-    https://launchpad.net/salt-formulas
+* #salt-formulas @ irc.freenode.net
+   Use this IRC channel in case of any questions or feedback which is always
+   welcome
 
-You can also join salt-formulas-users team and subscribe to mailing list:
-
-    https://launchpad.net/~salt-formulas-users
-
-Developers wishing to work on the salt-formulas projects should always base
-their work on master branch and submit pull request against specific formula.
-
-    https://github.com/salt-formulas/salt-formula-haproxy
-
-Any questions or feedback is always welcome so feel free to join our IRC
-channel:
-
-    #salt-formulas @ irc.freenode.net
