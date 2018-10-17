@@ -5,6 +5,8 @@ haproxy:
     logging: syslog
     max_connections: 1024
     nbproc: 4
+    global:
+      maxconn: 99999
     cpu_map:
       1: 0
       2: 1

@@ -3,13 +3,20 @@
         'pkgs': ['haproxy'],
         'service': 'haproxy',
         'stats_socket': '/run/haproxy/admin.sock',
+        'global': {
+          'maxconn' : 25000
+        }
     },
     'RedHat': {
         'pkgs': ['haproxy'],
         'service': 'haproxy',
         'stats_socket': '/var/lib/haproxy/stats',
+        'global': {
+          'maxconn' : 25000
+        }
     },
 }, merge=salt['pillar.get']('haproxy:proxy')) %}
+
 {% set invalid_section_options = {
     'frontend': [
         'abortonclose',
