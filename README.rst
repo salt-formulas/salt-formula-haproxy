@@ -363,6 +363,39 @@ it's bind on multiple interfaces):
 Definition above will result in creation of ``/etc/haproxy/ssl/dummy_site``
 directory with files ``1-all.pem`` and ``2-all.pem`` (per binds).
 
+Custom listener with http-check options specified
+
+.. code-block:: yaml
+
+  haproxy:
+    proxy:
+      enabled: true
+      forwardfor:
+        enabled: true
+        except: 127.0.0.1
+        header: X-Forwarded-For
+        if-none: false
+      listen:
+        glance_api:
+          binds:
+          - address: 192.168.2.11
+            port: 9292
+            ssl:
+              enabled: true
+              pem_file: /etc/haproxy/ssl/all.pem
+          http_request:
+          - action: set-header X-Forwarded-Proto https
+          mode: http
+          options:
+          - httpchk GET /
+          - httplog
+          - httpclose
+          servers:
+          - host: 127.0.0.1
+            name: ctl01
+            params: check inter 10s fastinter 2s downinter 3s rise 3 fall 3
+            port: 9292
+
 Custom listener with tcp-check options specified (for Redis cluster with Sentinel)
 
 .. code-block:: yaml

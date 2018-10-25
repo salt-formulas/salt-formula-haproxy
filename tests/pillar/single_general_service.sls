@@ -12,6 +12,25 @@ haproxy:
       4: 3
     stats_bind_process: "1 2"
     listen:
+      glance_registry:
+        binds:
+        - address: 192.168.2.11
+          port: 9191
+          ssl:
+            enabled: true
+            pem_file: /etc/haproxy/ssl/all.pem
+        http_request:
+        - action: set-header X-Forwarded-Proto https
+        mode: http
+        options:
+        - httpchk GET /
+        - httplog
+        - httpclose
+        servers:
+        - host: 127.0.0.1
+          name: ctl01
+          params: check inter 10s fastinter 2s downinter 3s rise 3 fall 3
+          port: 9191
       glance_api:
         type: openstack-service
         bind_process: "1 2 3 4"
