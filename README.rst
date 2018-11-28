@@ -85,7 +85,7 @@ Sample pillar with custom logging
         listen:
           https-in:
             binds:
-              address: 0.0.0.0
+            - address: 0.0.0.0
               port: 443
             servers:
             - name: server1
